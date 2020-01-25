@@ -25,8 +25,8 @@ function readCache() {
     try {
         var content = fs.readFileSync("data/cache.json", "utf8");
         var jsonObj = JSON.parse(content);
-        var cache = jsonObj.date;
-        console.log("Loaded cache. Last pulled on: " + cache);
+        var cache = new Date(jsonObj.date)
+        console.log("Loaded cache. Last pulled on: " + cache.toDateString());
         return cache;
     } catch {
         console.log("Missing or corrupted cache. Pulling from server.");
