@@ -22,4 +22,5 @@ app.get("/query", function(req, res) {
     var query = req.query;
 });
 
+console.log("App listening on port 3000");
 app.listen(3000);
