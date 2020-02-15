@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gramliu/course-api-web.git"
+    "url": "git+https://github.com/gramliu/course-api-v2.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/gramliu/course-api-web/issues"
+    "url": "https://github.com/gramliu/course-api-v2/issues"
   },
-  "homepage": "https://github.com/gramliu/course-api-web#readme",
+  "homepage": "https://github.com/gramliu/course-api-v2#readme",
   "dependencies": {
     "express": "^4.17.1"
   }
