@@ -66,7 +66,7 @@ class FCEDocument {
     }
 
     // Update the FCE data
-    addFceData(fceEntry) {
+    addEntry(fceEntry) {
         this._updateCourseInfo(fceEntry);
         yearObj = _getYearObj(fceEntry);
         semObj = _getSemObj(fceEntry, yearObj);
@@ -84,3 +84,5 @@ class FCEDocument {
         semObj.data.push(dataObj);
     }
 }
+
+module.exports = FCEDocument;

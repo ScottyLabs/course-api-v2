@@ -5,7 +5,7 @@ const fce_document = require("../model/fce_document");
 
 module.exports = {
     getSemesterData: getSemesterData,
-    getCourseData: getCourseData,
+    getCourseData: getCourseData
 };
 
 const semesters = {
@@ -46,6 +46,7 @@ function parseFCEData() {
         "hrsPerWeek8", "rating1", "rating2", "rating3", "rating4", "rating5",
         "rating6", "rating7", "rating8", "rating9"];
     var entriesCount = 0;
+    fceDocuments = {};
     fs.createReadStream("data/fce/fce.csv")
         .pipe(csv({
             mapHeaders: ({headers, index}) => headerLabels[index]
@@ -62,9 +63,16 @@ function parseFCEData() {
                     data.rating9
                 ]
             );
+            courseName = fceEntry.courseName;
+            if (courseName in fceDocuments) {
+                fceDocuments[courseName].addEntry(fceEntry);
+            } else {
+                fceDocuments[courseName] = new FCEDocument(fceEntry);
+            }
             entriesCount++;
         })
         .on("end", () => {
             console.log(entriesCount.toString() + " entries recorded");
+            // TODO: send fceDocuments to MongoDB server
         });
 }
