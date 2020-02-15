@@ -2,6 +2,7 @@ const parser = require("./api/parser");
 const io = require("./api/io");
 const express = require("express");
 var app = express();
+var port = process.env.PORT || 3000;
 
 var cache = io.readCache();
 
@@ -22,5 +23,5 @@ app.get("/query", function(req, res) {
     var query = req.query;
 });
 
-console.log("App listening on port 3000");
-app.listen(3000);
+console.log("App listening on port " + port);
+app.listen(port);
