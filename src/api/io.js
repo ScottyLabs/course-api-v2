@@ -28,7 +28,8 @@ function readCache() {
         var cache = new Date(jsonObj.date)
         console.log("Loaded cache. Last pulled on: " + cache.toDateString());
         return cache;
-    } catch {
+    } catch (err) {
+        console.log(err);
         console.log("Missing or corrupted cache. Pulling from server.");
         updateCache(undefined);
         return new Date();
