@@ -27,7 +27,7 @@ const section = [{
 }];
 
 export const courseSchema = new mongoose.Schema({
-    id: String,
+    courseID: String,
     desc: String,
     prereqs: [String],
     coreqs: [String],

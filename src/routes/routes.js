@@ -1,4 +1,4 @@
-import { addCourse } from '../controllers/courseController';
+import { addCourse, updateCourse } from '../controllers/courseController';
 import parser from '../api/parser';
 
 const routes = (app) => {
@@ -15,7 +15,11 @@ const routes = (app) => {
             res.end(parser.getSemesterData(semester));
         })
 
-    app.route('/update').post(addCourse);
+    app.route('/update')
+        .post(addCourse);
+    
+    app.route('/update/:courseID')
+        .put(updateCourse);
 }
 
 export default routes;
