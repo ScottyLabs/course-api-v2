@@ -1,7 +1,7 @@
 import fs from 'fs';
 import csv from 'csv-parser';
 import fceEntry from '../models/fceEntry';
-import fceDocument from '../models/fceDocument';
+import fceDocument, { FCEDocument } from '../models/fceDocument';
 
 const semesters = {
     'F': ['f', 'fall'],
@@ -36,20 +36,20 @@ export const getSemesterData = (query) => {
     }
 }
 
-const parseFCEData = () => {
+export const parseFCEData = () => {
     var headerLabels = ['year', 'semester', 'college', 'department', 'courseId',
         'section', 'instructor', 'courseName', 'level', 'possibleRespondents', 
         'numRespondents', 'responseRate', 'hrsPerWeek', 'hrsPerWeek5', 
         'hrsPerWeek8', 'rating1', 'rating2', 'rating3', 'rating4', 'rating5',
         'rating6', 'rating7', 'rating8', 'rating9'];
     var entriesCount = 0;
-    fceDocuments = {};
+    var fceDocuments = {};
     fs.createReadStream('data/fce/fce.csv')
         .pipe(csv({
             mapHeaders: ({headers, index}) => headerLabels[index]
         }))
         .on('data', (data) => {
-            fceEntry = new FCEEntry(
+            var fceEntry = new FCEEntry(
                 data.year, data.semester, data.college, data.department,
                 data.courseId, data.section, data.instructor, data.courseName,
                 data.level, data.possibleRespondents, data.numRespondents,
@@ -60,15 +60,16 @@ const parseFCEData = () => {
                     data.rating9
                 ]
             );
-            courseName = fceEntry.courseName;
-            if (courseName in fceDocuments) {
-                fceDocuments[courseName].addEntry(fceEntry);
+            var courseId = fceEntry.courseId;
+            if (courseId in fceDocuments) {
+                fceDocuments[courseId].addEntry(fceEntry);
             } else {
-                fceDocuments[courseName] = new FCEDocument(fceEntry);
+                fceDocuments[courseId] = new FCEDocument(fceEntry);
             }
             entriesCount++;
         })
         .on('end', () => {
             console.log(entriesCount.toString() + ' entries recorded');
         });
+    return fceDocuments;
 }
