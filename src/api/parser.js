@@ -1,7 +1,7 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import fce_entry from '../models/fce_entry';
-import fce_document from '../models/fce_document';
+import fceEntry from '../models/fceEntry';
+import fceDocument from '../models/fceDocument';
 
 const semesters = {
     "F": ["f", "fall"],
@@ -70,6 +70,5 @@ const parseFCEData = () => {
         })
         .on("end", () => {
             console.log(entriesCount.toString() + " entries recorded");
-            // TODO: send fceDocuments to MongoDB server
         });
 }
