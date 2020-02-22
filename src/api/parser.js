@@ -1,13 +1,13 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import fce_entry from '../models/fce_entry';
-import fce_document from '../models/fce_document';
+import fceEntry from '../models/fceEntry';
+import fceDocument from '../models/fceDocument';
 
 const semesters = {
-    "F": ["f", "fall"],
-    "S": ["s", "spring"],
-    "M1": ["m1", "summer1"],
-    "M2": ["m2", "summer2"]
+    'F': ['f', 'fall'],
+    'S': ['s', 'spring'],
+    'M1': ['m1', 'summer1'],
+    'M2': ['m2', 'summer2']
 }
 
 const getSemester = (semester) => {
@@ -28,27 +28,27 @@ export const getSemesterData = (query) => {
     if (semester === null) {
         return {
             code: 422,
-            message: "Invalid semester"
+            message: 'Invalid semester'
         };
     } else {
-        var content = fs.readFileSync("data/" + semester + ".json");
+        var content = fs.readFileSync('data/' + semester + '.json');
         return content;
     }
 }
 
 const parseFCEData = () => {
-    var headerLabels = ["year", "semester", "college", "department", "courseId",
-        "section", "instructor", "courseName", "level", "possibleRespondents", 
-        "numRespondents", "responseRate", "hrsPerWeek", "hrsPerWeek5", 
-        "hrsPerWeek8", "rating1", "rating2", "rating3", "rating4", "rating5",
-        "rating6", "rating7", "rating8", "rating9"];
+    var headerLabels = ['year', 'semester', 'college', 'department', 'courseId',
+        'section', 'instructor', 'courseName', 'level', 'possibleRespondents', 
+        'numRespondents', 'responseRate', 'hrsPerWeek', 'hrsPerWeek5', 
+        'hrsPerWeek8', 'rating1', 'rating2', 'rating3', 'rating4', 'rating5',
+        'rating6', 'rating7', 'rating8', 'rating9'];
     var entriesCount = 0;
     fceDocuments = {};
-    fs.createReadStream("data/fce/fce.csv")
+    fs.createReadStream('data/fce/fce.csv')
         .pipe(csv({
             mapHeaders: ({headers, index}) => headerLabels[index]
         }))
-        .on("data", (data) => {
+        .on('data', (data) => {
             fceEntry = new FCEEntry(
                 data.year, data.semester, data.college, data.department,
                 data.courseId, data.section, data.instructor, data.courseName,
@@ -68,8 +68,7 @@ const parseFCEData = () => {
             }
             entriesCount++;
         })
-        .on("end", () => {
-            console.log(entriesCount.toString() + " entries recorded");
-            // TODO: send fceDocuments to MongoDB server
+        .on('end', () => {
+            console.log(entriesCount.toString() + ' entries recorded');
         });
 }
