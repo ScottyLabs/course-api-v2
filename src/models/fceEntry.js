@@ -1,4 +1,4 @@
-class FCEEntry {
+export class FCEEntry {
     constructor(year, semester, college, department, courseId, section, 
         instructor, courseName, level, possibleRespondents, numRespondents,
         responseRate, hrsPerWeek, hrsPerWeek5, hrsPerWeek8, rating) {
@@ -47,5 +47,3 @@ class FCEEntry {
 
 
 }
-
-module.exports = FCEEntry;

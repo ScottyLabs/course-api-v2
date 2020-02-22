@@ -1,7 +1,9 @@
-class FCEDocument {
+export class FCEDocument {
     constructor(fceEntry) {
+        this.courseId = fceEntry.courseId;
         this.courseName = fceEntry.courseName;
-        this.info = []
+        this.college = fceEntry.college;
+        this.department = fceEntry.department;
         this.level = fceEntry.level;
         this.fce = [];
         this.addEntry(fceEntry);
@@ -45,29 +47,8 @@ class FCEDocument {
         return semObj;
     }
 
-    // Update associated course info with id aliases
-    // if alternatives found
-    _updateCourseInfo(fceEntry) {
-        idEntryMatch = false;
-        for (idEntry in this.info) {
-            if (idEntry.id == fceEntry.id) {
-                idEntryMatch = true;
-                break;
-            }
-        }
-        if  (!idEntryMatch) {
-            idEntry = {
-                id: fceEntry.id,
-                college: fceEntry.college,
-                department: fceEntry.department
-            };
-            this.info.push(idEntry);
-        }
-    }
-
     // Update the FCE data
     addEntry(fceEntry) {
-        this._updateCourseInfo(fceEntry);
         yearObj = _getYearObj(fceEntry);
         semObj = _getSemObj(fceEntry, yearObj);
         dataObj = {
@@ -84,5 +65,3 @@ class FCEDocument {
         semObj.data.push(dataObj);
     }
 }
-
-module.exports = FCEDocument;
