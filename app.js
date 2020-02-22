@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
-import routes from './src/routes/routes.js'
+import routes from './src/routes/routes.js';
 
 dotenv.config();
 const app = express();

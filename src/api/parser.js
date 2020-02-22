@@ -1,12 +1,7 @@
-const fs = require("fs");
-const csv = require("csv-parser");
-const fce_entry = require("../models/fce_entry");
-const fce_document = require("../models/fce_document");
-
-module.exports = {
-    getSemesterData: getSemesterData,
-    getCourseData: getCourseData
-};
+import fs from 'fs';
+import csv from 'csv-parser';
+import fce_entry from '../models/fce_entry';
+import fce_document from '../models/fce_document';
 
 const semesters = {
     "F": ["f", "fall"],
@@ -15,7 +10,7 @@ const semesters = {
     "M2": ["m2", "summer2"]
 }
 
-function getSemester(semester) {
+const getSemester = (semester) => {
     semester = semester.toLowerCase();
     for (var key in semesters) {
         var aliases = semesters[key];
@@ -26,7 +21,9 @@ function getSemester(semester) {
     return null;
 }
 
-function getSemesterData(query) {
+export const getCourseData = (query) => {}
+
+export const getSemesterData = (query) => {
     var semester = getSemester(query);
     if (semester === null) {
         return {
@@ -39,8 +36,8 @@ function getSemesterData(query) {
     }
 }
 
-function parseFCEData() {
-    headerLabels = ["year", "semester", "college", "department", "courseId",
+const parseFCEData = () => {
+    var headerLabels = ["year", "semester", "college", "department", "courseId",
         "section", "instructor", "courseName", "level", "possibleRespondents", 
         "numRespondents", "responseRate", "hrsPerWeek", "hrsPerWeek5", 
         "hrsPerWeek8", "rating1", "rating2", "rating3", "rating4", "rating5",
