@@ -3,14 +3,11 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
 import routes from './src/routes/routes.js'
-import io from './src/api/io';
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const database = process.env.MONGODB_URI || "mongodb://localhost:27017";
-
-var cache = io.readCache();
 
 // Connect to MongoDB
 mongoose.Promise = global.Promise;
