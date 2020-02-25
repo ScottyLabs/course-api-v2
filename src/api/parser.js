@@ -1,6 +1,7 @@
 import fs from 'fs';
-import csv from 'csv-parser';
-import fceEntry from '../models/fceEntry';
+import csv from 'csv-parse';
+import parse from 'csv-parse/lib/sync';
+import { FCEEntry } from '../models/fceEntry';
 import fceDocument, { FCEDocument } from '../models/fceDocument';
 
 const semesters = {
@@ -12,8 +13,8 @@ const semesters = {
 
 const getSemester = (semester) => {
     semester = semester.toLowerCase();
-    for (var key in semesters) {
-        var aliases = semesters[key];
+    for (let key in semesters) {
+        let aliases = semesters[key];
         if (aliases.indexOf(semester) > -1) {
             return key;
         }
@@ -24,52 +25,56 @@ const getSemester = (semester) => {
 export const getCourseData = (query) => {}
 
 export const getSemesterData = (query) => {
-    var semester = getSemester(query);
+    let semester = getSemester(query);
     if (semester === null) {
         return {
             code: 422,
             message: 'Invalid semester'
         };
     } else {
-        var content = fs.readFileSync('data/' + semester + '.json');
+        let content = fs.readFileSync('data/' + semester + '.json');
         return content;
     }
 }
 
 export const parseFCEData = () => {
-    var headerLabels = ['year', 'semester', 'college', 'department', 'courseId',
+    let headerLabels = ['year', 'semester', 'college', 'department', 'courseId',
         'section', 'instructor', 'courseName', 'level', 'possibleRespondents', 
         'numRespondents', 'responseRate', 'hrsPerWeek', 'hrsPerWeek5', 
         'hrsPerWeek8', 'rating1', 'rating2', 'rating3', 'rating4', 'rating5',
         'rating6', 'rating7', 'rating8', 'rating9'];
-    var entriesCount = 0;
-    var fceDocuments = {};
-    fs.createReadStream('data/fce/fce.csv')
-        .pipe(csv({
-            mapHeaders: ({headers, index}) => headerLabels[index]
-        }))
-        .on('data', (data) => {
-            var fceEntry = new FCEEntry(
-                data.year, data.semester, data.college, data.department,
-                data.courseId, data.section, data.instructor, data.courseName,
-                data.level, data.possibleRespondents, data.numRespondents,
-                data.responseRate, data.hrsPerWeek, data.hrsPerWeek5,
-                data.hrsPerWeek8, [
-                    data.rating1, data.rating2, data.rating3, data.rating4,
-                    data.rating5, data.rating6, data.rating7, data.rating8,
-                    data.rating9
-                ]
-            );
-            var courseId = fceEntry.courseId;
-            if (courseId in fceDocuments) {
-                fceDocuments[courseId].addEntry(fceEntry);
-            } else {
-                fceDocuments[courseId] = new FCEDocument(fceEntry);
-            }
-            entriesCount++;
-        })
-        .on('end', () => {
-            console.log(entriesCount.toString() + ' entries recorded');
-        });
-    return fceDocuments;
+    let content = fs.readFileSync('data/fce/fce.csv', 'UTF8');
+    let entries = parse(content, {
+        columns: headerLabels,
+        skip_empty_lines: true
+    });
+    let entriesCount = 0;
+    let fceDocuments = {};
+    for (let data of entries) {
+        let fceEntry = new FCEEntry(
+            data.year, data.semester, data.college, data.department,
+            data.courseId, data.section, data.instructor, data.courseName,
+            data.level, data.possibleRespondents, data.numRespondents,
+            data.responseRate, data.hrsPerWeek, data.hrsPerWeek5,
+            data.hrsPerWeek8, [
+                data.rating1, data.rating2, data.rating3, data.rating4,
+                data.rating5, data.rating6, data.rating7, data.rating8,
+                data.rating9
+            ]
+        );
+        let courseId = fceEntry.courseId;
+        if (fceDocuments.hasOwnProperty(courseId)) {
+            fceDocuments[courseId].addEntry(fceEntry);
+        } else {
+            fceDocuments[courseId] = new FCEDocument(fceEntry);
+        }
+        entriesCount++;
+    }
+
+    let docList = []
+    Object.keys(fceDocuments).forEach((key) => {
+        docList.push(fceDocuments[key]);
+    });
+    console.log(docList[0]);
+    return docList;
 }

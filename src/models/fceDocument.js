@@ -11,7 +11,7 @@ export class FCEDocument {
 
     // Get fce entry (year)
     _getYearObj(fceEntry) {
-        yearObj = null;
+        let yearObj = null;
         for (yearEntry in this.fce) {
             if (yearEntry.year == fceEntry.year) {
                 yearObj = yearEntry;
@@ -29,8 +29,8 @@ export class FCEDocument {
 
     // Get fce.semesters entry (semester)
     _getSemObj(fceEntry, yearObj) {
-        semesters = yearObj.semesters;
-        semObj = null;
+        let semesters = yearObj.semesters;
+        let semObj = null;
         for (semEntry in semesters) {
             if (semEntry.semester == fceEntry.semester) {
                 semObj = semEntry;
@@ -49,9 +49,9 @@ export class FCEDocument {
 
     // Update the FCE data
     addEntry(fceEntry) {
-        yearObj = _getYearObj(fceEntry);
-        semObj = _getSemObj(fceEntry, yearObj);
-        dataObj = {
+        let yearObj = this._getYearObj(fceEntry);
+        let semObj = this._getSemObj(fceEntry, yearObj);
+        let dataObj = {
             section: fceEntry.section,
             instructor: fceEntry.instructor,
             possibleRespondents: fceEntry.possibleRespondents,

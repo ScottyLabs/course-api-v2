@@ -1,18 +1,22 @@
 import mongoose from 'mongoose';
-import { courseSchema } from '../models/models';
-import { parseFCEData } from '../api/parser.js';
+import { fceSchema } from '../models/fceModel';
+import { parseFCEData } from '../api/parser';
 
-const FCE = mongoose.model('FCE', courseSchema);
+const FCE = mongoose.model('FCE', fceSchema);
 
-export const addFce = (req, res) => {
-    fceData = parseFCEData();
-    for (const [courseId, fceDocument] of Object.entries(fceData)) {
-        let newFce = new FCE(fceDocument);
-        newFce.save((err, fce) => {
-            if (err) {
-                res.send(err);
-            }
-            res.json(fce);
-        });
-    }
+export const updateFCE = (req, res) => {
+    let fceDocs = parseFCEData();
+    let FCEs = []
+    FCE.insertMany(fceDocs, (err, fce) => {
+        if (err) {
+            console.log("An error occured.");
+            console.log(err);
+            res.send(err);
+        } else {
+            console.log("Upload successful.");
+            res.json({
+                message: "Upload successful"
+            });
+        }
+    });
 }

@@ -1,6 +1,6 @@
 export class FCEEntry {
     constructor(year, semester, college, department, courseId, section, 
-        instructor, courseName, level, possibleRespondents, numRespondents,
+        name, courseName, level, possibleRespondents, numRespondents,
         responseRate, hrsPerWeek, hrsPerWeek5, hrsPerWeek8, rating) {
         this.year = year;
         this.semester = semester;
