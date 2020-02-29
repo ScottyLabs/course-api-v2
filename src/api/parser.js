@@ -75,6 +75,5 @@ export const parseFCEData = () => {
     Object.keys(fceDocuments).forEach((key) => {
         docList.push(fceDocuments[key]);
     });
-    console.log(docList[0]);
     return docList;
 }

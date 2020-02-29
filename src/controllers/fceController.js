@@ -7,6 +7,7 @@ const FCE = mongoose.model('FCE', fceSchema);
 export const updateFCE = (req, res) => {
     let fceDocs = parseFCEData();
     let FCEs = []
+    console.log("Uploading FCEs");
     FCE.insertMany(fceDocs, (err, fce) => {
         if (err) {
             console.log("An error occured.");

@@ -11,57 +11,46 @@ export class FCEDocument {
 
     // Get fce entry (year)
     _getYearObj(fceEntry) {
-        let yearObj = null;
-        for (yearEntry in this.fce) {
+        for (let i = 0; i < this.fce.length; i++) {
+            let yearEntry = this.fce[i];
             if (yearEntry.year == fceEntry.year) {
-                yearObj = yearEntry;
-                break;
+                return yearEntry;
             }
         }
-        if (yearObj == null) {
-            yearObj = {
-                year: fceEntry.year,
-                semesters: []
-            };
-        }
+        let yearObj = {
+            year: fceEntry.year,
+            spring: [],
+            fall: [],
+            summer: []
+        };
+        this.fce.push(yearObj);
         return yearObj
     }
 
-    // Get fce.semesters entry (semester)
-    _getSemObj(fceEntry, yearObj) {
-        let semesters = yearObj.semesters;
-        let semObj = null;
-        for (semEntry in semesters) {
-            if (semEntry.semester == fceEntry.semester) {
-                semObj = semEntry;
-                break;
-            }
-        }
-        if (semObj == null) {
-            semObj = {
-                semester: fceEntry.semester,
-                data: []
-            };
-            semesters.push(semObj);
-        }
-        return semObj;
+    _validate(semester) {
+        return ["spring", "fall", "summer"].includes(semester);
     }
 
     // Update the FCE data
     addEntry(fceEntry) {
-        let yearObj = this._getYearObj(fceEntry);
-        let semObj = this._getSemObj(fceEntry, yearObj);
-        let dataObj = {
-            section: fceEntry.section,
-            instructor: fceEntry.instructor,
-            possibleRespondents: fceEntry.possibleRespondents,
-            numRespondents: fceEntry.numRespondents,
-            responseRate: fceEntry.responseRate,
-            hrsPerWeek: fceEntry.hrsPerWeek,
-            hrsPerWeek5: fceEntry.hrsPerWeek5,
-            hrsPerWeek8: fceEntry.hrsPerWeek8,
-            rating: fceEntry.rating
-        };
-        semObj.data.push(dataObj);
+        let sem = fceEntry.semester;
+        if (!this._validate(sem)) {
+            console.log("Error unknown semester: " + sem);
+        } else {
+            let yearObj = this._getYearObj(fceEntry);
+            let semList = yearObj[sem];
+            let dataObj = {
+                section: fceEntry.section,
+                instructor: fceEntry.instructor,
+                possibleRespondents: fceEntry.possibleRespondents,
+                numRespondents: fceEntry.numRespondents,
+                responseRate: fceEntry.responseRate,
+                hrsPerWeek: fceEntry.hrsPerWeek,
+                hrsPerWeek5: fceEntry.hrsPerWeek5,
+                hrsPerWeek8: fceEntry.hrsPerWeek8,
+                rating: fceEntry.rating
+            };
+            semList.push(dataObj);
+        }
     }
 }

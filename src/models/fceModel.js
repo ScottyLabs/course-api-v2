@@ -5,21 +5,18 @@ const fceData = {
     instructor: String,
     possibleRespondents: Number,
     numRespondents: Number,
-    responseRate: mongoose.Types.Decimal128,
-    hrsPerWeek: mongoose.Types.Decimal128,
-    hrsPerWeek5: mongoose.Types.Decimal128,
-    hrsPerWeek8: mongoose.Types.Decimal128,
-    rating: [mongoose.Types.Decimal128]
-};
-
-const semester = {
-    semester: String,
-    data: [fceData]
+    responseRate: Number,
+    hrsPerWeek: Number,
+    hrsPerWeek5: Number,
+    hrsPerWeek8: Number,
+    rating: [Number]
 };
 
 const year = {
     year: String,
-    semesters: [semester]
+    fall: [fceData],
+    spring: [fceData],
+    summer: [fceData]
 };
 
 export const fceSchema = new mongoose.Schema({
