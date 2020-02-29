@@ -4,6 +4,41 @@ import fs from 'fs';
 
 const Course = mongoose.model('Course', courseSchema);
 
+export const getCourseWithID = (req, res) => {
+    Course.findById(req.params.courseID, (err, course) => {
+        if (err) {
+            res.send(err);
+        }
+        res.json(course);
+    });
+}
+
+export const getCourses = (req, res) => {
+    let requestParams = ['name', 'courseID', 'department', 'units',
+                         'prereqs', 'coreqs'];
+    let queryBody = new Object();
+    for (var key in req.body) {
+        if (requestParams.includes(key)) {
+            if (key == 'prereqs' && req.body.prereqs instanceof Array) {
+                queryBody['prereqs'] = {$in: req.body.prereqs};
+            } else if (key == 'coreqs' && req.body.coreqs instanceof Array) {
+                queryBody['coreqs'] = {$in: req.body.coreqs};
+            } else {
+                queryBody[key] = req.body[key];
+            }
+        } else {
+            res.json({ message: 'bad query',
+                       invalidKey: key });
+        }
+    }
+    Course.find(queryBody, (err, course) => {
+        if (err) {
+            res.send(err);
+        }
+        res.json(course);
+    });
+}
+
 export const addCourse = (req, res) => {
     let newCourse = new Course(req.body);
     Course.find({ courseID: req.body.courseID }, (err, docs) => {
