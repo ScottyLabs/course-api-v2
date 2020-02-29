@@ -1,16 +1,19 @@
 import { 
-    addCourse, 
+    addCourse,
+    getCourses,
+    getCourseWithID,
     addCoursesFromJSON, 
-    updateCourse 
+    updateCourse
 } from '../controllers/courseController';
 import { updateFCE } from '../controllers/fceController';
 import parser from '../api/parser';
 
 const routes = (app) => {
     app.route('/query')
-        .get((req, res) => {
-            var query = req.query;
-        });
+        .get(getCourses);
+
+    app.route('/query/:courseID')
+        .get(getCourseWithID);
 
     app.route('/info')
         .get((req, res) => {
