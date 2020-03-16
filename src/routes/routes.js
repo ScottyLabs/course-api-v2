@@ -9,25 +9,25 @@ import { updateFCE } from '../controllers/fceController';
 import parser from '../api/parser';
 
 const routes = (app) => {
-    app.route('/query')
+    app.route('/courses')
         .get(getCourses);
 
-    app.route('/query/:courseID')
+    app.route('/courses/courseID/:courseID')
         .get(getCourseWithID);
 
     app.route('/info')
         .get((req, res) => {
-
+            res.send({'message': '200'});
         });
 
-    app.route('/fce/query')
+    app.route('/fces')
         .get((req, res) => {
         }); 
 
-    app.route('/fce/update')
+    app.route('/fces/update')
         .get(updateFCE);
 
-    app.route('/semester/:semester')
+    app.route('/semesters/:semester')
         .get((req, res) => {
             var semester = req.params.semester;
             console.log("Requested semester: " + semester);
