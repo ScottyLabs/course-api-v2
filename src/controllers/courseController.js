@@ -4,8 +4,17 @@ import fs from 'fs';
 
 const Course = mongoose.model('Course', courseSchema);
 
+const standardizeID = (id) => {
+    if (!id.includes('-') && id.length >= 5) {
+        let newString = id.slice(0, 2) + '-' + id.slice(2);
+        return newString;
+    }
+    return id;
+}
+
 export const getCourseWithID = (req, res) => {
-    Course.findById(req.params.courseID, (err, course) => {
+    let id = standardizeID(req.params.courseID);
+    Course.findOne({ courseID: id }, (err, course) => {
         if (err) {
             res.send(err);
         }
@@ -100,7 +109,8 @@ export const addCoursesFromJSON = (req, res) => {
 }
 
 export const updateCourse = (req, res) => {
-    Course.findOneAndUpdate({ courseID: req.params.courseID }, (err, course) => {
+    let id = standardizeID(req.params.courseID);
+    Course.findOneAndUpdate({ courseID: id }, (err, course) => {
         if (err) {
             res.send(err);
         }
