@@ -1,16 +1,9 @@
 import mongoose from 'mongoose';
 import { fceSchema } from '../models/fceModel';
 import { parseFCEData } from '../api/parser';
+import { standardizeID } from '../api/util.js';
 
 const FCE = mongoose.model('FCE', fceSchema);
-
-const standardizeID = (id) => {
-    if (!id.includes('-') && id.length >= 5) {
-        let newString = id.slice(0, 2) + '-' + id.slice(2);
-        return newString;
-    }
-    return id;
-}
 
 export const getFCEWithID = (req, res) => {
     let id = standardizeID(req.params.courseID);

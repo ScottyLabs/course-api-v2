@@ -1,16 +1,9 @@
 import mongoose from 'mongoose';
 import { courseSchema } from '../models/courseModel';
 import fs from 'fs';
+import { standardizeID } from '../api/util.js';
 
 const Course = mongoose.model('Course', courseSchema);
-
-const standardizeID = (id) => {
-    if (!id.includes('-') && id.length >= 5) {
-        let newString = id.slice(0, 2) + '-' + id.slice(2);
-        return newString;
-    }
-    return id;
-}
 
 export const getCourseWithID = (req, res) => {
     let id = standardizeID(req.params.courseID);
@@ -34,6 +27,9 @@ export const getCourses = (req, res) => {
                 queryBody['coreqs'] = {$in: req.body.coreqs};
             } else {
                 queryBody[key] = req.body[key];
+                if (key == 'courseID') {
+                    queryBody[key] = standardizeID(queryBody[key]);
+                }
             }
         } else {
             res.json({ message: 'bad query',
