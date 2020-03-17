@@ -4,6 +4,7 @@ import { parseFCEData } from '../api/parser';
 import { standardizeID } from '../api/util.js';
 
 const FCE = mongoose.model('FCE', fceSchema);
+const resultFilter = "-_id -__v -fce.fall._id -fce.spring._id -fce.summer._id";
 
 export const getFCEWithID = (req, res) => {
     let id = standardizeID(req.params.courseID);
@@ -11,7 +12,7 @@ export const getFCEWithID = (req, res) => {
         if (err) return res.send(err);
         if (fce === null) fce = {};
         return res.json(fce);
-    })
+    }).select(resultFilter);
 };
 
 export const getFCEs = (req, res) => {
@@ -20,7 +21,7 @@ export const getFCEs = (req, res) => {
             res.send(err);
         }
         res.json(course);
-    });
+    }).select(resultFilter);
 }
 
 export const updateFCE = (req, res) => {
