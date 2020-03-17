@@ -2,10 +2,12 @@
   "name": "courseapi",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js --exec babel-node -e js"
+    "start": "nodemon ./src/app.js --exec babel-node -e js",
+    "start-prod": "npm run build && npm run serve",
+    "build": "babel src --out-dir dist",
+    "serve": "node dist/app.js"
   },
   "repository": {
     "type": "git",
@@ -23,10 +25,10 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongodb": "^3.5.3",
-    "mongoose": "^5.9.1",
-    "nodemon": "^2.0.2"
+    "mongoose": "^5.9.1"
   },
   "devDependencies": {
+    "nodemon": "^2.0.2",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1"
