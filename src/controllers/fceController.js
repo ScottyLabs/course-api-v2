@@ -4,12 +4,31 @@ import { parseFCEData } from '../api/parser';
 
 const FCE = mongoose.model('FCE', fceSchema);
 
+const standardizeID = (id) => {
+    if (!id.includes('-') && id.length >= 5) {
+        let newString = id.slice(0, 2) + '-' + id.slice(2);
+        return newString;
+    }
+    return id;
+}
+
 export const getFCEWithID = (req, res) => {
-    FCE.findOne({ courseID: req.params.courseID }, (err, fce) => {
+    let id = standardizeID(req.params.courseID);
+    FCE.findOne({ courseID: id }, (err, fce) => {
         if (err) return res.send(err);
+        if (fce === null) fce = {};
         return res.json(fce);
     })
 };
+
+export const getFCEs = (req, res) => {
+    FCE.find({}, (err, course) => {
+        if (err) {
+            res.send(err);
+        }
+        res.json(course);
+    });
+}
 
 export const updateFCE = (req, res) => {
     let fceDocs = parseFCEData();

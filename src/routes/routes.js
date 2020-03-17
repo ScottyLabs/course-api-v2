@@ -7,7 +7,8 @@ import {
 } from '../controllers/courseController';
 import {
     updateFCE,
-    getFCEWithID
+    getFCEWithID,
+    getFCEs
 } from '../controllers/fceController';
 import parser from '../api/parser';
 
@@ -24,8 +25,10 @@ const routes = (app) => {
         });
 
     app.route('/fces')
-        .get((req, res) => {
-        }); 
+        .get(getFCEs);
+    
+    app.route('/fces/courseID/:courseID')
+        .get(getFCEWithID);
 
     app.route('/fces/update')
         .get(updateFCE);
