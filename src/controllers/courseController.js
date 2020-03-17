@@ -4,6 +4,7 @@ import fs from 'fs';
 import { standardizeID } from '../api/util.js';
 
 const Course = mongoose.model('Course', courseSchema);
+const resultFilter = "-_id -__v -lectures._id -lectures.times._id -sections._id -sections.times._id";
 
 export const getCourseWithID = (req, res) => {
     let id = standardizeID(req.params.courseID);
@@ -12,7 +13,7 @@ export const getCourseWithID = (req, res) => {
             res.send(err);
         }
         res.json(course);
-    });
+    }).select(resultFilter);
 }
 
 export const getCourses = (req, res) => {
@@ -41,7 +42,7 @@ export const getCourses = (req, res) => {
             res.send(err);
         }
         res.json(course);
-    });
+    }).select(resultFilter);
 }
 
 export const addCourse = (req, res) => {
