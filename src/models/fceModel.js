@@ -20,7 +20,7 @@ const year = {
 };
 
 export const fceSchema = new mongoose.Schema({
-    courseId: String,
+    courseID: String,
     courseName: String,
     college: String,
     department: String,

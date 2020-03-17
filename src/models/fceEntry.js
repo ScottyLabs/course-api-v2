@@ -7,14 +7,21 @@ export class FCEEntry {
         }
     }
 
-    constructor(year, semester, college, department, courseId, section, 
+    _insertDash(courseID) {
+        if (courseID.charAt(2) != "-") {
+            return courseID.substring(0, 2) + "-" + courseID.substring(2);
+        }
+        return courseID;
+    }
+
+    constructor(year, semester, college, department, courseID, section, 
         name, courseName, level, possibleRespondents, numRespondents,
         responseRate, hrsPerWeek, hrsPerWeek5, hrsPerWeek8, rating) {
         this.year = year;
         this.semester = semester.toLowerCase();
         this.college = college;
         this.department = department;
-        this.courseId = courseId;
+        this.courseID = this._insertDash(courseID);
         this.section = section;
         this.instructor = name;
         this.courseName = courseName;

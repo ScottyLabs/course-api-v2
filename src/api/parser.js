@@ -38,7 +38,7 @@ export const getSemesterData = (query) => {
 }
 
 export const parseFCEData = () => {
-    let headerLabels = ['year', 'semester', 'college', 'department', 'courseId',
+    let headerLabels = ['year', 'semester', 'college', 'department', 'courseID',
         'section', 'instructor', 'courseName', 'level', 'possibleRespondents', 
         'numRespondents', 'responseRate', 'hrsPerWeek', 'hrsPerWeek5', 
         'hrsPerWeek8', 'rating1', 'rating2', 'rating3', 'rating4', 'rating5',
@@ -53,7 +53,7 @@ export const parseFCEData = () => {
     for (let data of entries) {
         let fceEntry = new FCEEntry(
             data.year, data.semester, data.college, data.department,
-            data.courseId, data.section, data.instructor, data.courseName,
+            data.courseID, data.section, data.instructor, data.courseName,
             data.level, data.possibleRespondents, data.numRespondents,
             data.responseRate, data.hrsPerWeek, data.hrsPerWeek5,
             data.hrsPerWeek8, [
@@ -62,11 +62,11 @@ export const parseFCEData = () => {
                 data.rating9
             ]
         );
-        let courseId = fceEntry.courseId;
-        if (fceDocuments.hasOwnProperty(courseId)) {
-            fceDocuments[courseId].addEntry(fceEntry);
+        let courseID = fceEntry.courseID;
+        if (fceDocuments.hasOwnProperty(courseID)) {
+            fceDocuments[courseID].addEntry(fceEntry);
         } else {
-            fceDocuments[courseId] = new FCEDocument(fceEntry);
+            fceDocuments[courseID] = new FCEDocument(fceEntry);
         }
         entriesCount++;
     }

@@ -1,6 +1,6 @@
 export class FCEDocument {
     constructor(fceEntry) {
-        this.courseId = fceEntry.courseId;
+        this.courseID = fceEntry.courseID;
         this.courseName = fceEntry.courseName;
         this.college = fceEntry.college;
         this.department = fceEntry.department;

@@ -5,7 +5,10 @@ import {
     addCoursesFromJSON, 
     updateCourse
 } from '../controllers/courseController';
-import { updateFCE } from '../controllers/fceController';
+import {
+    updateFCE,
+    getFCEWithID
+} from '../controllers/fceController';
 import parser from '../api/parser';
 
 const routes = (app) => {
