@@ -34,9 +34,9 @@ export class FCEEntry {
         this.hrsPerWeek5 = this._castToNum(hrsPerWeek5);
         this.hrsPerWeek8 = this._castToNum(hrsPerWeek8);
         this.rating = [];
-        for (let r in rating) {
-            this.rating.push(this._castToNum(r));
-        }
+        rating.forEach(element => {
+            this.rating.push(this._castToNum(element));
+        })
     }
 
     /*
