@@ -1,27 +1,35 @@
-import mongoose from 'mongoose';
-import { fceSchema } from '../models/fceModel';
-import { parseFCEData } from '../api/parser';
-import { standardizeID } from '../api/util.js';
+import mongoose, { Query } from "mongoose";
+import { fceSchema } from "../models/fceModel";
+import { parseFCEData } from "../api/parser";
+import { standardizeID } from "../api/util.js";
 
-const FCE = mongoose.model('FCE', fceSchema);
-const resultFilter = "-_id -__v -fce._id -fce.fall._id -fce.spring._id -fce.summer._id";
+const FCE = mongoose.model("FCE", fceSchema);
+const resultFilter =
+    "-_id -__v -fce._id -fce.fall._id -fce.spring._id -fce.summer._id";
 
-// Filters results to return only entries with specified instructor
-function _purgeOtherInstructors(instructor, fce) {
+function hasOwnProperty(obj, property) {
+    return obj[property] !== undefined || obj.hasOwnProperty(property);
+}
+
+// Filters results to return only entries with specified instructors
+function _purgeOtherInstructors(instructors, fce) {
     let entries = fce.fce;
     let deleteYears = [];
     entries.forEach((yearEntry, yearIdx) => {
-        let sems = ["spring", "fall", "summer"];
+        let sems = ["spring", "summer", "fall"];
         let deleteSems = [];
         sems.forEach(sem => {
             // Remove fceEntries with other professors from current semester
             let semester = yearEntry[sem];
-            let deleteIndices = []
+            let deleteIndices = [];
             semester.forEach((fceEntry, i) => {
-                if (!fceEntry.instructor.toUpperCase()
-                    .includes(instructor)) {
-                    deleteIndices.push(i);
-                }
+                let good = false;
+                instructors.forEach(instructor => {
+                    good |= fceEntry.instructor
+                        .toUpperCase()
+                        .includes(instructor);
+                });
+                if (!good) deleteIndices.push(i);
             });
             // Remove entire semester if all entries invalid
             if (deleteIndices.length === semester.length) {
@@ -44,21 +52,71 @@ function _purgeOtherInstructors(instructor, fce) {
     }
 }
 
+// Filters results to only show the specified amount of past semesters
+function _purgeOlderSemesters(semesters, fce) {
+    if (semesters < 1) {
+        return {
+            error: "Semester count must be a positive integer!"
+        };
+    } else {
+        let entries = fce.fce;
+        let semesterCount = 0;
+        let deleteYears = [];
+        entries.forEach((yearEntry, yearIdx) => {
+            let semesterNames = ["fall", "summer", "spring"];
+            let deleteSemesters = [];
+            let yearSemCount = 0;
+            semesterNames.forEach((sem) => {
+                if (hasOwnProperty(yearEntry, sem)) {
+                    yearSemCount++;
+                    if (semesterCount < semesters) {
+                        semesterCount++;
+                    } else {
+                        deleteSemesters.push(sem);
+                    }
+                }
+            });
+            if (deleteSemesters.length == yearSemCount) {
+                deleteYears.push(yearIdx);
+            } else {
+                // Delete semester if beyond semester count cap
+                deleteSemesters.forEach((sem) => {
+                    yearEntry[sem] = undefined;
+                });
+            }
+        });
+        // Delete entire year if all semesters invalid
+        for (let i = deleteYears.length - 1; i >= 0; i--) {
+            entries.splice(deleteYears[i], 1);
+        }
+        fce.fce = entries;
+    }
+}
+
 export const getFCEWithID = (req, res) => {
     let id = standardizeID(req.params.courseID);
-
     FCE.findOne({ courseID: id }, (err, fce) => {
         if (err) return res.send(err);
         if (fce === null) {
             fce = {};
         } else {
-            if (req.query !== undefined) {
-                if(req.query.hasOwnProperty('instructor')) {
-                    let instructor = req.query.instructor.toUpperCase();
-                    _purgeOtherInstructors(instructor, fce);
+            if (req.body !== undefined) {
+                // Query fce's for specified instructors
+                if (hasOwnProperty(req.body, "instructor")) {
+                    let instructors = req.body.instructor;
+                    if (!(instructors instanceof Array)) {
+                        instructors = [instructors];
+                    }
+                    instructors.forEach((instructor, i) => {
+                        instructors[i] = instructor.toUpperCase();
+                    });
+                    _purgeOtherInstructors(instructors, fce);
                 }
-                if (req.query.hasOwnProperty('semesters')) {
-                    let semesters = req.query.semesters;
+                // Query fce's for the past n semesters
+                if (hasOwnProperty(req.body, "semesters")) {
+                    let semesters = req.body.semesters;
+                    let res = _purgeOlderSemesters(semesters, fce);
+                    if (res !== undefined) fce = res;
                 }
             }
         }
@@ -73,11 +131,11 @@ export const getFCEs = (req, res) => {
         }
         res.json(course);
     }).select(resultFilter);
-}
+};
 
 export const updateFCE = (req, res) => {
     let fceDocs = parseFCEData();
-    let FCEs = []
+    let FCEs = [];
     console.log("Uploading FCEs");
     FCE.insertMany(fceDocs, (err, fce) => {
         if (err) {
@@ -91,4 +149,4 @@ export const updateFCE = (req, res) => {
             });
         }
     });
-}
+};

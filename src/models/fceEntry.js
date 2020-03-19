@@ -23,8 +23,8 @@ export class FCEEntry {
         this.department = department;
         this.courseID = this._insertDash(courseID);
         this.section = section;
-        this.instructor = name;
-        this.courseName = courseName;
+        this.instructor = name.toUpperCase();
+        this.courseName = courseName.toUpperCase();
         this.level = level;
         this.possibleRespondents = possibleRespondents;
         this.numRespondents = numRespondents;
