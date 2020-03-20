@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
 import routes from './routes/routes.js';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,10 @@ mongoose.connect(database, {
 // Set up Body Parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+if (process.env.DEBUG) {
+    app.use(cors());
+}
 
 routes(app);
 
