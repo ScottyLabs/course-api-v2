@@ -11,6 +11,7 @@ import {
     getFCEs
 } from '../controllers/fceController';
 import parser from '../api/parser';
+import dotenv from 'dotenv';
 
 const routes = (app) => {
     app.route('/courses')
@@ -30,8 +31,10 @@ const routes = (app) => {
     app.route('/fces/courseID/:courseID')
         .get(getFCEWithID);
 
-    app.route('/fces/update')
-        .get(updateFCE);
+    if (process.env.NODE_ENV == 'DEVELOPMENT') {
+        app.route('/fces/update')
+            .get(updateFCE);
+    }
 
     app.route('/semesters/:semester')
         .get((req, res) => {
