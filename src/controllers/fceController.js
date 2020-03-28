@@ -102,8 +102,9 @@ export const getFCEWithID = (req, res) => {
         } else {
             if (req.body !== undefined) {
                 // Query fce's for specified instructors
-                if (hasOwnProperty(req.body, "instructor")) {
-                    let instructors = req.body.instructor;
+                console.log(req.body);
+                if (hasOwnProperty(req.body, "instructors")) {
+                    let instructors = req.body.instructors;
                     if (!(instructors instanceof Array)) {
                         instructors = [instructors];
                     }
