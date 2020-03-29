@@ -126,18 +126,12 @@ export const getFCEWithID = (req, res) => {
 };
 
 export const getFCEs = (req, res) => {
-    res.json({
-        message: "Too much data. Please query for a specific course only"
-    });
-    /*
-    Remove until migration to CC server is complete
     FCE.find({}, (err, course) => {
         if (err) {
             res.send(err);
         }
         res.json(course);
     }).select(resultFilter);
-    */
 };
 
 export const updateFCE = (req, res) => {
