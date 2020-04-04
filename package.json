@@ -7,7 +7,10 @@
     "start": "nodemon ./src/app.js --exec babel-node -e js",
     "start-prod": "npm run build && npm run serve",
     "build": "babel src --out-dir dist",
-    "serve": "node dist/app.js"
+    "serve": "node dist/app.js",
+    "reset-mongo": "./mongo.sh",
+    "build-docker": "docker build -t scottylabs-course-api:2 .",
+    "docker": "sh ./docker.sh"
   },
   "repository": {
     "type": "git",
