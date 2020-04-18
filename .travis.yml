@@ -1,16 +1,15 @@
 language: node_js
 node_js:
-  - lts/*
-
-
-# line 9 resolved an issue where the Travis server would
-# try to connect to my remote using ssh-dss, which then caused my
-# remote server to puke and demand a password, causing the build
-# to time out
+- lts/*
 dist: trusty
 sudo: false
-
-# This keeps the "add <your-host.tld> to known_hosts" prompt from popping up
 addons:
   ssh_known_hosts:
   - chicago.club.cc.cmu.edu
+before_install:
+- openssl aes-256-cbc -K $encrypted_db2095f63ba3_key -iv $encrypted_db2095f63ba3_iv
+  -in .travis/deploy_rsa.enc -out .travis/deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- cp .travis/deploy_rsa ~/.ssh/id_rsa
+- chmod 600 ~/.ssh/id_rsa
+- ssh-add ~/.ssh/id_rsa
