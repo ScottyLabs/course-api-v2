@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon ./src/app.js --exec babel-node -e js",
-    "start-prod": "npm run build && npm run serve",
+    "start": "npm run build && npm run serve",
+    "dev": "nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/app.js"
   },
