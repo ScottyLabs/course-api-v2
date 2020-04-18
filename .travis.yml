@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - lts/*
+
+
+# line 9 resolved an issue where the Travis server would
+# try to connect to my remote using ssh-dss, which then caused my
+# remote server to puke and demand a password, causing the build
+# to time out
+dist: trusty
+sudo: false
+
+# This keeps the "add <your-host.tld> to known_hosts" prompt from popping up
+addons:
+  ssh_known_hosts:
+  - chicago.club.cc.cmu.edu
