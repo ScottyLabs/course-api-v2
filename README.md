@@ -10,4 +10,4 @@ Check the [wiki](https://github.com/ScottyLabs/course-api-v2/wiki/API-Documentat
 
 # Deployment
 
-To be added...
+If you want to use our tool built using this API to find course and FCE information, check it out [here](https://course.scottylabs.org/).
