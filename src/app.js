@@ -20,10 +20,7 @@ mongoose.connect(database, {
 // Set up Body Parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-if (process.env.DEBUG) {
-    app.use(cors());
-}
+app.use(cors());
 
 routes(app);
 
