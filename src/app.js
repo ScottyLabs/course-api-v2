@@ -18,9 +18,9 @@ mongoose.connect(database, {
 });
 
 // Set up Body Parser
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
 
 routes(app);
 
