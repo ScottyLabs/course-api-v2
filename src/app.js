@@ -28,7 +28,7 @@ if (process.env.DEBUG) {
 routes(app);
 
 app.get("/", function(req, res) {
-    res.send("ScottyLabs CourseAPI Homepage r. Spring 2020");
+    res.send("ScottyLabs CourseAPI Homepage (May 2020)");
 });
 
 app.listen(port, () =>
