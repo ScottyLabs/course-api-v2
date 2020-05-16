@@ -21,10 +21,6 @@ mongoose.connect(database, {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-if (process.env.DEBUG) {
-    app.use(cors());
-}
-
 routes(app);
 
 app.get("/", function(req, res) {
