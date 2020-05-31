@@ -7,7 +7,7 @@ const Course = mongoose.model("Course", courseSchema);
 const resultFilter =
   "-_id -__v -lectures._id -lectures.times._id -sections._id -sections.times._id";
 
-export const getCourseWithID = async (req, res) => {
+export const getCourseWithID = (req, res) => {
   let id = standardizeID(req.params.courseID);
   const course = await Course.findOne({ courseId: id });
   Course.findOne({ courseID: id }, (err, course) => {
