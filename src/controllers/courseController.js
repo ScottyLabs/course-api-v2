@@ -12,7 +12,7 @@ export const getCourseWithID = (req, res) => {
   Course.findOne({ courseID: id }, (err, course) => {
     if (err) return res.status(500).send(err);
     if (!course)
-      return res.status(400).send({ message: "Unknown course ID" });
+      return res.status(404).send({ message: "Unknown course ID" });
     return res.json(course);
   }).select(resultFilter);
 };
