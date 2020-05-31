@@ -9,7 +9,6 @@ const resultFilter =
 
 export const getCourseWithID = (req, res) => {
   let id = standardizeID(req.params.courseID);
-  const course = await Course.findOne({ courseId: id });
   Course.findOne({ courseID: id }, (err, course) => {
     if (err) return res.status(500).send(err);
     if (!course)
