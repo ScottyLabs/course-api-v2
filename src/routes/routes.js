@@ -52,6 +52,11 @@ const routes = (app) => {
     
     app.route('/update/:courseID')
         .put(updateCourse);
+
+    app.route('/foo')
+        .get((req, res) => {
+            res.json({ message: "cors", date: "1 June 2020" });
+        });
 }
 
 export default routes;
