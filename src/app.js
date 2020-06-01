@@ -17,8 +17,13 @@ mongoose.connect(database, {
     useUnifiedTopology: true
 });
 
+// Set cors policy
+if (process.env.NODE_ENV === 'production')
+    app.use(cors({ origin: 'http://course.scottylabs.org' }));
+else
+    app.use(cors());
+
 // Set up Body Parser
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
