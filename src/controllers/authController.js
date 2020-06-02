@@ -5,31 +5,32 @@ import jwt from 'jsonwebtoken';
 
 const User = mongoose.model('User', userSchema);
 
-export const registerUser = async (req, res) => {
+export const registerUser = (req, res) => {
   if (!req.body.name || !req.body.email || !req.body.password) {
     return res.status(400).json({
       message: 'Missing form parameters! Requires name, email, and password.',
     });
   }
 
-  const userExist = await User.find({ email: req.body.email });
-  if (userExist.length > 0)
-    return res.status(409).json({ message: 'User already exists!' });
-
-  const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-  let newUser = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: hashedPassword,
-    admin: false
-  });
-  newUser.save((err, user) => {
-    if (err)
-      return res.status(500).json({ message: 'User registration failed!' });
-    const token = jwt.sign({ id: user._id }, process.env.AUTH_SECRET);
-    user.token = token;
-    user.save();
-    res.status(200).json({ auth: true, token: newUser.token });
+  User.find({ email: req.body.email }, (err, userExist) => {
+    if (err) return res.status(500).json({ message: 'Registration failed!' });
+    if (userExist.length > 0)
+      return res.status(409).json({ message: 'User already exists!' });
+    const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+    let newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword,
+      admin: false,
+    });
+    newUser.save((err, user) => {
+      if (err)
+        return res.status(500).json({ message: 'User registration failed!' });
+      const token = jwt.sign({ id: user._id }, process.env.AUTH_SECRET);
+      user.token = token;
+      user.save();
+      res.status(200).json({ auth: true, token: newUser.token });
+    });
   });
 };
 
@@ -50,7 +51,7 @@ export const loginUser = (req, res) => {
     const passwordValid = bcrypt.compareSync(req.body.password, user.password);
     if (!passwordValid)
       return res.status(401).json({ auth: false, token: null });
-    
+
     if (!user.token) {
       const token = jwt.sign({ id: user._id }, process.env.AUTH_SECRET);
       user.token = token;
@@ -76,10 +77,11 @@ export const verifyToken = (req, res, next) => {
 };
 
 export const verifyAdmin = (req, res, next) => {
-  if (!req.userId) return res.status(500).json({ message: 'Authentication Error' });
+  if (!req.userId)
+    return res.status(500).json({ message: 'Authentication Error' });
   User.findById(req.userId, (err, user) => {
     if (err) return res.status(500).send({ message: 'Authentication Error' });
     if (!user.admin) return res.status(401).json({ message: 'Unauthorized!' });
     next();
   });
-}
+};
