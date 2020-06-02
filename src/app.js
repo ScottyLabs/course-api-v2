@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
-import routes from './routes/routes.js';
+import routes from './controllers/index.js';
 import cors from 'cors';
 
 dotenv.config();
@@ -17,24 +17,7 @@ mongoose.connect(database, {
   useUnifiedTopology: true,
 });
 
-// Set cors policy
-var whitelist = [
-  'http://course.scottylabs.org',
-  'https://course.scottylabs.org',
-];
-
-var corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
-
-if (process.env.NODE_ENV === 'production') app.use(cors(corsOptions));
-else app.use(cors());
+app.use(cors());
 
 // Set up Body Parser
 app.use(bodyParser.urlencoded({ extended: true }));
