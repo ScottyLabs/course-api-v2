@@ -24,11 +24,11 @@ const routes = (app) => {
     res.send({ message: '200' });
   });
 
-  app.route('/fces').get(verifyToken, getFCEs);
+  app.route('/fces').get(getFCEs);
 
-  app.route('/fces/courseID/:courseID').get(verifyToken, getFCEWithID);
+  app.route('/fces/courseID/:courseID').get(getFCEWithID);
 
-  app.route('/semesters/:semester').get(verifyToken, (req, res) => {
+  app.route('/semesters/:semester').get((req, res) => {
     var semester = req.params.semester;
     console.log('Requested semester: ' + semester);
     res.writeHead(200, { 'content-type': 'application/json' });
