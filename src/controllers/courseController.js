@@ -7,6 +7,13 @@ const Course = mongoose.model("Course", courseSchema);
 const resultFilter =
   "-_id -__v -lectures._id -lectures.times._id -sections._id -sections.times._id";
 
+/**
+ * Get a course by course ID.
+ * Sends the course object via response object.
+ * @param {Object} req request object
+ * @param {string} req.params.courseID course ID
+ * @param {Object} res response object
+ */
 export const getCourseWithID = (req, res) => {
   let id = standardizeID(req.params.courseID);
   Course.findOne({ courseID: id }, (err, course) => {
@@ -17,6 +24,18 @@ export const getCourseWithID = (req, res) => {
   }).select(resultFilter);
 };
 
+/**
+ * Get courses by different parameters.
+ * Sends the course objects via response object. 
+ * @param {Object} req request object
+ * @param {String[]} [req.body.prereqs] prerequisite courses by course IDs
+ * @param {String[]} [req.body.coreqs] corequisite courses by course IDs
+ * @param {String} [req.body.courseID] course ID of course
+ * @param {String} [req.body.name] name of course
+ * @param {String} [req.body.department] department of course
+ * @param {number} [req.body.units] number of units
+ * @param {Object} res response object
+ */
 export const getCourses = (req, res) => {
   let requestParams = [
     "name",
@@ -49,6 +68,13 @@ export const getCourses = (req, res) => {
   }).select(resultFilter);
 };
 
+/**
+ * Add a course that does not already exist.
+ * Sends created course object via response object.
+ * @param {Object} req request object
+ * @param {Object} req.body object conforming to course schema
+ * @param {Object} res response object
+ */
 export const addCourse = (req, res) => {
   let newCourse = new Course(req.body);
   Course.find({ courseID: req.body.courseID }, (err, docs) => {
@@ -63,6 +89,12 @@ export const addCourse = (req, res) => {
   });
 };
 
+/**
+ * Add courses from a JSON object.
+ * @param {Object} req request object
+ * @param {string} req.body.file path to JSON data file
+ * @param {Object} res response object
+ */
 export const addCoursesFromJSON = (req, res) => {
   let data = fs.readFileSync("./data/" + req.body.file);
   let parsed = JSON.parse(data);
@@ -107,8 +139,15 @@ export const addCoursesFromJSON = (req, res) => {
   res.json({ message: "Successfully added documents" });
 };
 
+/**
+ * Updates a course by course ID.
+ * @param {Object} req request object
+ * @param {string} req.params.courseID course ID of course to update
+ * @param {Object} res response object
+ */
 export const updateCourse = (req, res) => {
   let id = standardizeID(req.params.courseID);
+  // TODO: This should update course by course ID.
   Course.findOneAndUpdate({ courseID: id }, (err, course) => {
     if (err) return res.status(500).send(err);
     return res.json(course);
