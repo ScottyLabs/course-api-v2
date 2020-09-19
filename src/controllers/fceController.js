@@ -143,8 +143,8 @@ export const getFCEs = (req, res) => {
 
 /**
  * Inserts FCE from parseFCEData().
- * @param {*} req request object
- * @param {*} res response object
+ * @param {Object} req request object
+ * @param {Object} res response object
  */
 export const updateFCE = (req, res) => {
   let fceDocs = parseFCEData();
