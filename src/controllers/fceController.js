@@ -91,6 +91,15 @@ function _purgeOlderSemesters(semesters, fce) {
   }
 }
 
+/**
+ * Gets FCE by course ID, optionally by instructors and semesters.
+ * Sends FCE via response object.
+ * @param {Object} req request object
+ * @param {string} req.params.courseID course ID
+ * @param {string|string[]} [req.body.instructors] instructor(s) names
+ * @param {string[]} req.body.semesters semesters
+ * @param {Object} res response object
+ */
 export const getFCEWithID = (req, res) => {
   let id = standardizeID(req.params.courseID);
   FCE.findOne({ courseID: id }, (err, fce) => {
@@ -120,6 +129,11 @@ export const getFCEWithID = (req, res) => {
   }).select(resultFilter);
 };
 
+/**
+ * Gets all FCEs and sends via response object.
+ * @param {Object} req request object
+ * @param {Object} res response object
+ */
 export const getFCEs = (req, res) => {
   FCE.find({}, (err, course) => {
     if (err) return res.status(500).send(err);
@@ -127,6 +141,11 @@ export const getFCEs = (req, res) => {
   }).select(resultFilter);
 };
 
+/**
+ * Inserts FCE from parseFCEData().
+ * @param {Object} req request object
+ * @param {Object} res response object
+ */
 export const updateFCE = (req, res) => {
   let fceDocs = parseFCEData();
   console.log("Uploading FCEs");
