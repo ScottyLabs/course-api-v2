@@ -41,6 +41,13 @@ export const getCourseJson = async (courseId, semester, log = true) => {
   });
 };
 
+const courseListToArray = (listStr) => {
+  if (listStr.trim() === 'None')
+    return [];
+  
+  return listStr.split(',').map(str => str.trim())
+};
+
 export const parseCourseJson = (json) => {
   let reservations = {};
   if (json?.reservationRows) {
@@ -124,9 +131,10 @@ export const parseCourseJson = (json) => {
     sections,
     relatedUrls: json.relatedUrls,
     specialPermission: json.specialPermission,
-    prerequisites: json.prerequisites.split(',').map(str => str.trim()),
-    corequisites: json.corequisites.split(',').map(str => str.trim()),
-    crossListed: json.crossListed.split(',').map(str => str.trim()),
-    notes: json.notes.trim()
+    prerequisites: json.prerequisites,
+    corequisites: courseListToArray(json.corequisites),
+    crossListed: courseListToArray(json.crossListed),
+    notes: json.notes.trim(),
+    description: description
   }
 };
