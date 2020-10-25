@@ -1,5 +1,6 @@
 /*
-	Cleans up data for Mongo Schema
+  Cleans up data for Mongo Schema
+  Data from two sources: scraped schedule, and individually scraped courses
 
 	export const courseSchema = new mongoose.Schema({
 		courseID: String,
@@ -43,11 +44,46 @@ const cleanUpCourse = (courseJson) => {
     coreqs: courseJson.corequisites,
     crosslisted: courseJson.crossListed,
     units: courseJson.units, // string, since not all units are integers
-    department: courseJson.department
-  }
-}
+    department: courseJson.department,
+  };
+};
 
-export const cleanUp = (json) => {
+const getDetailsFromSchedules = (schedules) => {
+  const details = new Map();
+  for (const schedule of schedules) {
+    for (const course of schedule.courses) {
+      let courseName = course.name;
+      let suffixes = [];
+
+      for (const section of course.sections) {
+        if (section.sessions.length > 0 && section.sessions?.courseName)
+          suffixes.push(`${section.section} - ${section.sessions.courseName}`);
+      }
+
+      if (suffixes.length > 0) courseName += " | " + suffixes.join(" | ");
+
+      if (!details.has(course.id)) {
+        details.set(course.id, {
+          name: courseName,
+          department: course.subject,
+        });
+      }
+    }
+  }
+
+  return details;
+};
+
+export const cleanUp = (scheduleJson, detailsJson) => {
   const courses = [];
   const sessions = [];
+
+  const details = getDetailsFromSchedules(scheduleJson.schedules);
+
+  for (const scrapedCourse of detailsJson.scraped) {
+    const courseId = scrapedCourse.courseId;
+    const courseDetails = details.get(courseId);
+    scrapedCourse.name = courseDetails.name;
+    scrapedCourse.department = courseDetails.department;
+  }
 };

@@ -51,25 +51,6 @@ const scrapeSingleCourse = async (course) => {
   return parseCourseJson(courseJson);
 };
 
-const getDetailsFromSchedules = (schedules) => {
-  const details = new Map();
-  for (const schedule of schedules) {
-    for (const course of schedule.courses) {
-      if (details.has(course.id)) {
-        console.log(
-          `${course.id} has two entries in schedule, ` + `picking longer name`
-        );
-      } else {
-        details.set(course.id, {
-          name: course.name,
-          department: course.subject,
-        });
-      }
-    }
-  }
-
-  return details;
-};
 
 /*
   Parse schedule from Semester Schedule Page
@@ -182,15 +163,6 @@ console.log(argv);
     } else {
       console.log(`Unrecognized semester ${semester}.`);
       return;
-    }
-
-    const details = getDetailsFromSchedules(parsedSchedule.schedules);
-
-    for (const scrapedCourse of output.scraped) {
-      const courseId = scrapedCourse.courseId;
-      const courseDetails = details.get(courseId);
-      scrapedCourse.name = courseDetails.name;
-      scrapedCourse.department = courseDetails.department;
     }
 
     let outputJson = { scrapeInfo, ...output };
