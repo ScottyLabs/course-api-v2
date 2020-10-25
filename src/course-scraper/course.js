@@ -2,7 +2,7 @@ import fs from 'fs';
 import Xray from 'x-ray';
 import cheerio from 'cheerio';
 
-const x = Xray().throttle(2, '1s');
+const x = Xray().throttle(4, '1s');
 
 const repairHtml = (rawHtml) => {
   return cheerio.load(rawHtml, {
@@ -135,6 +135,6 @@ export const parseCourseJson = (json) => {
     corequisites: courseListToArray(json.corequisites),
     crossListed: courseListToArray(json.crossListed),
     notes: json.notes.trim(),
-    description: description
+    description: json.description
   }
 };

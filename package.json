@@ -7,7 +7,8 @@
     "start": "npm run build && npm run serve",
     "dev": "nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
-    "serve": "node dist/app.js"
+    "serve": "node dist/app.js",
+    "course-scrape": "node src/course-scraper/scrape.js"
   },
   "repository": {
     "type": "git",

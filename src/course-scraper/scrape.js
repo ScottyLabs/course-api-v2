@@ -3,7 +3,8 @@ import parseArgs from 'minimist';
 import { getScheduleJson, parseScheduleJson } from './schedule.js';
 import { getCourseJson, parseCourseJson } from './course.js';
 
-const scrapeCourseIds = (courseIds, shortSem) => {
+const scrapeCourseIds = async (courseIds, shortSem) => {
+  console.log(`Scraping ${courseIds.length} courses for ${shortSem}...`);
   let scraped = [];
   let skipped = [];
   for (const [i, courseId] of courseIds.entries()) {
@@ -16,6 +17,7 @@ const scrapeCourseIds = (courseIds, shortSem) => {
       const parsedCourse = parseCourseJson(courseJson);
       scraped.push({ courseId, ...parsedCourse });
     } catch (e) {
+      console.log(e);
       console.log(`Unable to scrape ${courseId}, skipping...`);
       skipped.push(courseId);
     }
@@ -23,6 +25,30 @@ const scrapeCourseIds = (courseIds, shortSem) => {
 
   return { scraped, skipped };
 };
+
+const scrapeSchedule = async (semester) => {
+  if (semester === 'summer') {
+    const summerOneJson = await getScheduleJson('summer_1');
+    const summerTwoJson = await getScheduleJson('summer_2');
+
+    const parsedScheduleOne = parseScheduleJson(summerOneJson);
+    const parsedScheduleTwo = parseScheduleJson(summerTwoJson);
+
+    return [{ semester: 'summer_1', ...parsedScheduleOne },
+            { semester: 'summer_2', ...parsedScheduleTwo }];
+
+  } else {
+    const scheduleJson = await getScheduleJson(semester);
+    const parsedSchedule = parseScheduleJson(scheduleJson);
+
+    return [{ semester: semester, ...parsedSchedule }];
+  }
+}
+
+const scrapeSingleCourse = async (course, semester) => {
+  const courseJson = await getCourseJson(course, argv.semester);
+  return parseCourseJson(courseJson);
+}
 
 /*
   Parse schedule from Semester Schedule Page
@@ -43,40 +69,24 @@ console.log(argv);
   };
 
   if (argv?.schedule) {
-    const semester = argv.schedule;
     const outputFile = argv?._[0] || 'schedules.json';
 
-    // TODO: special logic for summer - combine summer_1 and summer_2
-    const outputJson;
-    if (semester === 'summer') {
-      const summerOneJson = await getScheduleJson('summer_1');
-      const summerTwoJson = await getScheduleJson('summer_2');
-
-      const parsedScheduleOne = parseScheduleJson(summerOneJson);
-      const parsedScheduleTwo = parseScheduleJson(summerTwoJson);
-
-      outputJson = { scrapeInfo,
-        schedules: [{ semester: 'summer_1', ...parsedScheduleOne },
-                   { semester: 'summer_2', ...parsedScheduleTwo }]};
-    } else {
-      const scheduleJson = await getScheduleJson(semester);
-      const parsedSchedule = parseScheduleJson(scheduleJson);
-      outputJson = { scrapeInfo, 
-        schedules: [{ semester: semester, ...parsedSchedule }] };
-    }
+    const outputJson = {
+      scrapeInfo, 
+      schedules: await scrapeSchedule(argv.schedule)
+    };
 
     await fs.promises.writeFile(outputFile, JSON.stringify(outputJson,
                                                            null, 2));
   } else if (argv?.course) {
-    let course = argv?.course.toString();
-    if (course.length === 4) course = '0' + course;
+    let courseId = argv?.course.toString();
+    if (course.length === 4) courseId = '0' + courseIId;
 
-    const outputFile = argv?._[0] || `${course}_${argv.semester}.json`;
-
-    const courseJson = await getCourseJson(course, argv.semester);
-    const parsedCourse = parseCourseJson(courseJson);
-
-    const outputJson = { scrapeInfo, ...parsedCourse };
+    const outputFile = argv?._[0] || `${courseId}_${argv.semester}.json`;
+    const outputJson = {
+      scrapeInfo, 
+      ...await scrapeSingleCourse(courseId, argv.semester)
+    };
 
     await fs.promises.writeFile(outputFile, JSON.stringify(outputJson,
                                                            null, 2));
@@ -93,10 +103,8 @@ console.log(argv);
     const parsedScheduleStream = await fs.promises.readFile(inputFile);
     const parsedSchedule = JSON.parse(parsedScheduleStream.toString());
 
-    let courseIds; 
-
-    const semester = parsedSchedule.scrapeInfo.semester;
-    const year = parsedSchedule.schedules[0].semester.match(/20[0-9]{2}/)[1];
+    const semester = parsedSchedule.scrapeInfo.args.schedule;
+    const year = parsedSchedule.schedules[0].semester.match(/20([0-9]{2})/)[1];
 
     let output;
 
@@ -109,7 +117,7 @@ console.log(argv);
       ))];
 
       console.log(`Found ${courseIds.length} unique course IDs.`);
-      output = scrapeCourseIds(courseIds, shortSem);
+      output = await scrapeCourseIds(courseIds, shortSem);
     } else if (semester === 'summer') {
       let summerOneCourseIdsSet = new Set(
         parsedSchedule.schedules[0].courses.map(course => course.id));
@@ -125,11 +133,11 @@ console.log(argv);
       console.log(`Found ${summerTwoOnly.length} unique course IDs ` +
                   `for summer two only.`);
 
-      let { summerOneScraped, summerOneSkipped} =
-        scrapeCourseIds(summerOneCourseIds, 'M' + year);
+      const { scraped: summerOneScraped, skipped: summerOneSkipped } =
+        await scrapeCourseIds(summerOneCourseIds, 'M' + year);
       
-      let { summerTwoOnlyScraped, summerTwoOnlySkipped} =
-        scrapeCourseIds(summerTwoOnly, 'N' + year);
+      const { scraped: summerTwoOnlyScraped, skipped: summerTwoOnlySkipped } =
+        await scrapeCourseIds(summerTwoOnly, 'N' + year);
       
       output = {
         scraped: [...summerOneScraped, summerTwoOnlyScraped],
@@ -137,13 +145,12 @@ console.log(argv);
       };
 
     } else {
-      console,log(`Unrecognized semester ${semester}.`);
+      console.log(`Unrecognized semester ${semester}.`);
       return;
     }
     
-    output = { scrapeInfo, ...output };
-
-    await fs.promises.writeFile(outputFile, JSON.stringify(output,
+    let outputJson = { scrapeInfo, ...output };
+    await fs.promises.writeFile(outputFile, JSON.stringify(outputJson,
                                                            null, 2));
   }
 })();
