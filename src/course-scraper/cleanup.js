@@ -30,12 +30,24 @@
 */
 
 const prereqStrToArray = (prereqStr) => {
-  if (prereqStr.trim() === 'None')
-    return [];
-  
+  if (prereqStr.trim() === "None") return [];
   return prereqStr.match(/(\d{5})/).slice(1);
+};
+
+const cleanUpCourse = (courseJson) => {
+  return {
+    courseID: courseJson.courseId,
+    desc: courseJson.description,
+    prereqs: prereqStrToArray(courseJson.prerequisites),
+    prereqString: courseJson.prerequisites,
+    coreqs: courseJson.corequisites,
+    crosslisted: courseJson.crossListed,
+    units: courseJson.units, // string, since not all units are integers
+    department: courseJson.department
+  }
 }
 
-const cleanUp = (json) => {
-  // TODO
-}
+export const cleanUp = (json) => {
+  const courses = [];
+  const sessions = [];
+};

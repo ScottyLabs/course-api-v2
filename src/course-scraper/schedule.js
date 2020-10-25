@@ -71,7 +71,7 @@ const parseRows = (rows) => {
         id: row[0],
         name: row[1],
         units: row[2],
-        subject: currentDepartment,
+        department: currentDepartment,
         sections: []
       };
       sectionObj = {};
