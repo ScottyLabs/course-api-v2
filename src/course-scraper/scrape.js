@@ -2,6 +2,7 @@ import fs from "fs";
 import parseArgs from "minimist";
 import { getScheduleJson, parseScheduleJson } from "./schedule.js";
 import { getCourseJson, parseCourseJson } from "./course.js";
+import { cleanUp } from "./cleanup.js";
 
 const scrapeCourseIds = async (courseIds, shortSem) => {
   console.log(`Scraping ${courseIds.length} courses for ${shortSem}...`);
@@ -50,7 +51,6 @@ const scrapeSingleCourse = async (course) => {
   const courseJson = await getCourseJson(course, argv.semester);
   return parseCourseJson(courseJson);
 };
-
 
 /*
   Parse schedule from Semester Schedule Page
@@ -170,5 +170,18 @@ console.log(argv);
       outputFile,
       JSON.stringify(outputJson, null, 2)
     );
+  } else if (argv?.cleanup) {
+    const schedulesFile = argv.schedules;
+    const detailsFile = argv.details;
+    const outputFile = argv?._[0] || "schedules.json";
+
+    const schedulesStream = await fs.promises.readFile(schedulesFile);
+    const schedules = JSON.parse(schedulesStream.toString());
+
+    const detailsStream = await fs.promises.readFile(detailsFile);
+    const details = JSON.parse(detailsStream.toString());
+
+    const cleanedUp = cleanUp(schedules, details);
+    await fs.promises.writeFile(outputFile, JSON.stringify(cleanedUp, null, 2));
   }
 })();
