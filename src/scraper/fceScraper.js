@@ -4,52 +4,6 @@ import fs from 'fs';
 import parse from 'csv-parse/lib/sync.js';
 import { stringify } from 'querystring';
 
-// export const parseFCEData2 = () => {
-//     var data2020 = new File([""], './Course_Evaluation_Results_2020.csv');
-//     let fceDocuments = {};
-//     console.log("this function is running")
-//     Papa.parse(data2020, {
-//         header: true,
-//         skipEmptyLines: true,
-//         //where data is being processed
-//         step: function(results, file) {
-//              //old parser code below, slightly modified
-//             let fceEntry = new FCEEntry(
-//                 2020, results.data['Semester'], results.data['Division'], results.data['Dept'],
-//                 results.data['Num'], '', '', results.data['Course Name'],
-//                 results.data['Course Level'], '', '',
-//                 '', results.data['Hrs Per Week'], '',
-//                 '', [
-//                     results.data['Interest in student learning'],
-//                     results.data['Clearly explain course requirements'],
-//                     results.data['Clear learning objectives & goals'],
-//                     results.data['Instructor provides feedback to students to improve'],
-//                     results.data["demonstrate importance of subject matter"],
-//                     results.data['Explains subject matter of course'],
-//                     results.data['Show respect for all students'],
-//                     results.data['Overall teaching rate'],
-//                     results.data['Overall course rate']
-//                 ]
-//             );
-//             let courseID = fceEntry.courseID;
-//             if (fceDocuments.hasOwnProperty(courseID)) {
-//                 fceDocuments[courseID].addEntry(fceEntry);
-//             } else {
-//                 fceDocuments[courseID] = new FCEDocument(fceEntry);
-//             }
-//             console.log("successfully parsed 2020 data");
-//         }
-//     });
-
-//     //once data is done being processed
-//     //old code from parser.js
-//     let docList = []
-//     Object.keys(fceDocuments).forEach((key) => {
-//         docList.push(fceDocuments[key]);
-//     });
-//     return docList;
-// }
-
 //old parser code
 //seems to work after I modified it for the new csv
 export const parseFCEData = () => {
@@ -120,12 +74,13 @@ export const parseFCEData = () => {
     Object.keys(fceDocuments).forEach((key) => {
         docList.push(fceDocuments[key]);
     });
+    //.index of? look up javascript find index
+    //use find?
     return docList;
 }
 
 const data = parseFCEData();
-const str = stringify(data);
-fs.writeFile('./testResults.json', JSON.stringify(data), function(err) {
+fs.writeFile('./testResults.json', JSON.stringify(data, null, 2), function(err) {
     console.log(err);
 });
 //console.log(data);
