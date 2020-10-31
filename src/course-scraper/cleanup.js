@@ -32,20 +32,24 @@
 
 const prereqStrToArray = (prereqStr) => {
   if (prereqStr.trim() === "None") return [];
-  return prereqStr.match(/(\d{5})/g);
+  return prereqStr.match(/(\d{5})/g).map(hyphenateId);
+};
+
+const hyphenateId = (courseId) => {
+  return courseId.slice(0, 2) + "-" + courseId.slice(2);
 };
 
 const cleanUpCourse = (courseJson) => {
   return {
     name: courseJson.name,
     department: courseJson.department,
-    courseID: courseJson.courseId,
+    courseID: hyphenateId(courseJson.courseId),
     desc: courseJson.description,
     prereqs: prereqStrToArray(courseJson.prerequisites),
     prereqString:
       courseJson.prerequisites === "None" ? "" : courseJson.prerequisites,
-    coreqs: courseJson.corequisites,
-    crosslisted: courseJson.crossListed,
+    coreqs: courseJson.corequisites.map(hyphenateId),
+    crosslisted: courseJson.crossListed.map(hyphenateId),
     units: courseJson.units, // string, since not all units are integers
     department: courseJson.department,
   };
@@ -125,8 +129,6 @@ export const cleanUp = (scheduleJson, detailsJson) => {
   const courses = [];
   const schedules = [];
   const details = getDetailsFromSchedules(scheduleJson.schedules);
-  const lectures = [];
-  const sections = [];
 
   const isLecture = (letter, isFirstLine) => {
     letter = letter.toLowerCase();
@@ -136,6 +138,7 @@ export const cleanUp = (scheduleJson, detailsJson) => {
   };
 
   const year = parseInt(scheduleJson.schedules[0].semester.match(/(\d+)/)[1]);
+  const semester = scheduleJson.scrapeInfo.args.schedule;
 
   for (const scrapedCourse of detailsJson.scraped) {
     const courseId = scrapedCourse.courseId;
@@ -147,28 +150,73 @@ export const cleanUp = (scheduleJson, detailsJson) => {
     let course = cleanUpCourse(scrapedCourse);
     courses.push(course);
 
-    let schedule = {
-      courseID: courseId,
+    const baseSchedule = {
+      courseID: hyphenateId(courseId),
       year,
-      lectures: [],
-      sections: [],
+      semester,
     };
 
-    for (const [idx, row] of scrapedCourse.sections.entries()) {
-      if (isLecture(row.section, idx === 0)) {
-        let lecture = cleanUpLecture(row);
-        schedule.lectures.push(lecture);
-      } else {
-        let section = cleanUpSection(row);
-        schedule.sections.push(section);
+    if (semester !== "summer") {
+      baseSchedule.lectures = [];
+      baseSchedule.sections = [];
+
+      for (const [idx, row] of scrapedCourse.sections.entries()) {
+        if (row.cancelled) continue;
+
+        if (isLecture(row.section, idx === 0)) {
+          let lecture = cleanUpLecture(row);
+          baseSchedule.lectures.push(lecture);
+        } else {
+          let section = cleanUpSection(row);
+          baseSchedule.sections.push(section);
+        }
+      }
+
+      schedules.push(baseSchedule);
+    } else {
+      const summerSessionNames = [
+        "",
+        "summer all",
+        "summer one",
+        "summer two",
+        "qatar summer",
+      ];
+
+      for (const summerSession of summerSessionNames) {
+
+        let sessionSchedule = {
+          ...baseSchedule,
+          lectures: [],
+          sections: [],
+          session: summerSession === '' ? null : summerSession
+        };
+
+        const sessionRows = scrapedCourse.sections.filter(section => {
+          if (section.cancelled) return false;
+          return section.session === summerSession;
+        });
+
+        if (sessionRows.length === 0) continue;
+
+        for (const [idx, row] of sessionRows.entries()) {
+          if (row.cancelled) continue;
+  
+          if (isLecture(row.section, idx === 0)) {
+            let lecture = cleanUpLecture(row);
+            sessionSchedule.lectures.push(lecture);
+          } else {
+            let section = cleanUpSection(row);
+            sessionSchedule.sections.push(section);
+          }
+        }
+
+        schedules.push(sessionSchedule);
       }
     }
-
-    schedules.push(schedule);
   }
 
   return {
     courses,
-    schedules
+    schedules,
   };
 };
