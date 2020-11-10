@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/app.js",
+  "node": "modules",
   "scripts": {
     "start": "npm run build && npm run serve",
     "dev": "nodemon ./src/app.js --exec babel-node -e js",
@@ -28,7 +29,8 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.5.3",
-    "mongoose": "^5.9.1"
+    "mongoose": "^5.9.1",
+    "puppeteer": "^5.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
