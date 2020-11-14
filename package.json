@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/app.js",
-  "node": "modules",
+  "type": "module",
   "scripts": {
     "start": "npm run build && npm run serve",
     "dev": "nodemon ./src/app.js --exec babel-node -e js",
