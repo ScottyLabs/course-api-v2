@@ -24,11 +24,11 @@ export const parseFCEData = async () => {
         let entries = parse(content, {
             skip_empty_lines: true
         });
+        console.log(entries.length);
         let entriesCount = 0;
         let year = name.split("_")[2].substr(0,4); //new
         entries.shift();
         for (let data of entries) {
-            if (entriesCount > 100) break;
             let dataArray = [];
             for (let cell of data) {
                 if (cell.match(/\w/gm)) {
@@ -41,28 +41,20 @@ export const parseFCEData = async () => {
                 }
             }
             let fceEntry = new FCEEntry(dataArray, headerLabels, year);
-            await fceEntry.addSection();
-            console.log(fceEntry._retrieve());
-            fceDocuments[fceEntry.courseID] = fceEntry;
+            await fceEntry.addLocation();
+            //console.log(fceEntry._retrieve());
+            fceDocuments.push(fceEntry);
             entriesCount++;
+            //console.log(entriesCount);
         }
     }
-
-    //complies return object
-    let docList = []
-    Object.keys(fceDocuments).forEach((key) => {
-        docList.push(fceDocuments[key]);
-    });
-    //console.log(docList.length);
-    return docList;
+    
+    return fceDocuments;
 }
 
 //find out where in this that's casting courseID to an int
 parseFCEData().then((data) => {
-    fs.writeFile('./testResults2.json', JSON.stringify(data, null, 2), function(err) {
+    fs.writeFile('./FCEs.json', JSON.stringify(data, null, 2), function(err) {
         console.log(err);
     });
 });
-// fs.writeFile('./testResults.json', JSON.stringify(data, null, 2), function(err) {
-//     console.log(err);
-// });

@@ -37,7 +37,7 @@ export class FCEEntry {
         college,
         instructor,
         andrewID,
-        section,
+        location,
         department,
         courseID,
         courseName,
@@ -54,7 +54,7 @@ export class FCEEntry {
         college,
         instructor,
         andrewID,
-        section,
+        location,
         department,
         courseID,
         courseName,
@@ -72,7 +72,7 @@ export class FCEEntry {
       // Structure invariants
       console.assert(data instanceof Array, "Data is not an Array");
       console.assert(labels instanceof Array, "Labels is not an Array");
-      console.assert(data.length == labels.length, "Array length mismatch");
+      console.assert(data.length == labels.length, "Array length mismatch" + data); //issues here
 
       let labelCount = 0;
       this.rating = [];
@@ -87,11 +87,11 @@ export class FCEEntry {
             break;
           case "college":
           case "department":
-          case "section":
+          case "location":
           case "level":
           case "possibleRespondents":
           case "numRespondents":
-            this[label] = data[labelCount];
+            this[label] = data[labelCount].trim();
             break;
           case "instructor":
           case "courseName":
@@ -165,22 +165,20 @@ export class FCEEntry {
     }
 
     //find out where in this that's casting courseID to an int
-    async addSection() {
+    async addLocation() {
         const schedule = await Schedule.findOne({courseID: this.courseID, year: this.year, semester: this.semester});
         if (schedule != null) {
             if (schedule.lectures != null) {
                 for (let lecture of schedule.lectures) {
                     if (lecture.instructors.map((x) => x.toUpperCase()).includes(this.instructor)) {
-                        this.section = lecture.location;
-                        console.log(this);
+                        this.location = lecture.location;
                     }
                 }
             }
-            if (schedule.sections != null) {
+            if (schedule.locations != null) {
                 for (let section of schedule.sections) {
                     if (section.instructors.map((x) => x.toUpperCase()).includes(this.instructor)) {
-                        this.section = section.location;
-                        console.log(this);
+                        this.location = section.location;
                     }
                 }
             }
