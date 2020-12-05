@@ -1,24 +1,24 @@
 import {
-  addCourse,
   getCourses,
-  getCourseWithID,
-  addCoursesFromJSON,
-  updateCourse,
-} from './courseController';
-import { updateFCE, getFCEWithID, getFCEs } from './fceController';
+  getCourseWithID
+} from './courseController.js';
+import { updateFCE, getFCEWithID, getFCEs } from './fceController.js';
+import { getSchedules } from './scheduleController.js';
 import {
   registerUser,
   checkUser,
   loginUser,
   verifyToken,
   verifyAdmin
-} from './authController';
-import parser from '../api/parser';
+} from './authController.js';
+import * as parser from '../api/parser.js';
 
 const routes = (app) => {
   app.route('/courses').get(getCourses);
 
   app.route('/courses/courseID/:courseID').get(getCourseWithID);
+
+  app.route('/schedules').get(getSchedules);
 
   app.route('/info').get((req, res) => {
     res.send({ message: '200' });
@@ -36,12 +36,6 @@ const routes = (app) => {
   });
 
   app.route('/fces/update').get(verifyToken, verifyAdmin, updateFCE);
-
-  app.route('/courses/update').post(verifyToken, verifyAdmin, addCourse);
-
-  app.route('/courses/upload').post(verifyToken, verifyAdmin, addCoursesFromJSON);
-
-  app.route('/courses/update/:courseID').put(verifyToken, verifyAdmin, updateCourse);
 
   app.route('/register').post(registerUser);
 

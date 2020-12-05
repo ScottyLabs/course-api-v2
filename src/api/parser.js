@@ -1,8 +1,8 @@
 import fs from 'fs';
 import csv from 'csv-parse';
-import parse from 'csv-parse/lib/sync';
-import { FCEEntry } from '../models/fceEntry';
-import fceDocument, { FCEDocument } from '../models/fceDocument';
+import parse from 'csv-parse/lib/sync.js';
+import { FCEEntry } from '../models/fceEntry.js';
+import { FCEDocument } from '../models/fceDocument.js';
 
 const semesters = {
     'F': ['f', 'fall'],
