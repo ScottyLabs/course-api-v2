@@ -10,7 +10,8 @@ const lecture = [{
         location: String
     }],
     name: String,
-    instructors: [String]
+    instructors: [String],
+    location: String
 }];
 
 const section = [{
@@ -23,17 +24,33 @@ const section = [{
         location: String
     }],
     name: String,
-    instructors: [String]
+    instructors: [String],
+    location: String
 }];
 
 export const courseSchema = new mongoose.Schema({
     courseID: String,
     desc: String,
     prereqs: [String],
+    prereqString: String,
     coreqs: [String],
+    crosslisted: [String],
     name: String,
-    units: Number,
-    department: String,
+    units: String,
+    department: String
+});
+
+export const scheduleSchema = new mongoose.Schema({
+    courseID: String,
+    year: Number,
+    semester: {
+        type: String,
+        enum: ["fall", "spring", "summer"]
+    },
+    session: {
+        type: String,
+        enum: [null, "summer all", "summer one", "summer two", "qatar summer"]
+    },
     lectures: lecture,
     sections: section
 });
