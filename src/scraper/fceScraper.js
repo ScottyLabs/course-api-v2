@@ -1,5 +1,4 @@
 import { FCEEntry } from '../models/fceEntry.js';
-import { FCEDocument } from '../models/fceDocument.js';
 import fs from 'fs';
 import parse from 'csv-parse/lib/sync.js';
 
@@ -8,7 +7,7 @@ import parse from 'csv-parse/lib/sync.js';
 export const parseFCEData = async () => {
     //resets header labels to process section-by-section analysis
     let headerLabels = ['semester', 'college', 'instructor', 'andrewID',
-        'department', 'courseID','courseName', 'level', 'trait',
+        'department', 'courseID','courseName', 'level', /*'trait',*/
         'numRespondents', 'possibleRespondents', 'responseRate', 'hrsPerWeek',
         'rating1', 'rating2', 'rating3', 'rating4', 'rating5',
         'rating6', 'rating7', 'rating8', 'rating9'];
@@ -31,21 +30,22 @@ export const parseFCEData = async () => {
         for (let data of entries) {
             let dataArray = [];
             for (let cell of data) {
-                if (cell.match(/\w/gm)) {
+                if (cell.match(/\w/gm) != null) {
                     dataArray.push(cell);
                 }
             }
             if (dataArray.length < headerLabels.length) {
-                for (let i = 0; i < headerLabels.length - dataArray.length; i++) {
+                for (let i = 0; i <= headerLabels.length - dataArray.length; i++) {
                     dataArray.push("");
                 }
             }
+            if (dataArray[headerLabels.indexOf("courseName")].length === 0) {
+                continue;
+            }
             let fceEntry = new FCEEntry(dataArray, headerLabels, year);
             await fceEntry.addLocation();
-            //console.log(fceEntry._retrieve());
             fceDocuments.push(fceEntry);
             entriesCount++;
-            //console.log(entriesCount);
         }
     }
     
@@ -54,7 +54,11 @@ export const parseFCEData = async () => {
 
 //find out where in this that's casting courseID to an int
 parseFCEData().then((data) => {
-    fs.writeFile('./FCEs.json', JSON.stringify(data, null, 2), function(err) {
+    if (!fs.existsSync("./results")) {
+        fs.mkdirSync("./results");
+    }
+    fs.writeFile('./results/FCEs.json', JSON.stringify(data, null, 2), function(err) {
         console.log(err);
+        process.exit();
     });
 });

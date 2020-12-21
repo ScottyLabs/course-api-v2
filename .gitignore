@@ -3,3 +3,4 @@ data
 .env
 dist
 *.csv
+results
