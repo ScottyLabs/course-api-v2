@@ -5,7 +5,7 @@ import {
   addCoursesFromJSON,
   updateCourse,
 } from './courseController';
-import { updateFCE, getFCEWithID, getFCEs } from './fceController';
+import { getFCEWithID, getFCEs } from './fceController';
 import {
   registerUser,
   checkUser,
@@ -34,8 +34,6 @@ const routes = (app) => {
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(parser.getSemesterData(semester));
   });
-
-  app.route('/fces/update').get(verifyToken, verifyAdmin, updateFCE);
 
   app.route('/courses/update').post(verifyToken, verifyAdmin, addCourse);
 
