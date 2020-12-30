@@ -8,7 +8,8 @@
     "start": "npm run build && npm run serve",
     "dev": "nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
-    "serve": "node dist/app.js"
+    "serve": "node dist/app.js",
+    "course-scrape": "node src/course-scraper/scrape.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
   "homepage": "https://github.com/gramliu/course-api-v2#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.3",
     "cors": "^2.8.5",
     "csv-parse": "^4.14.2",
     "dotenv": "^8.2.0",
@@ -29,7 +32,9 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.8",
-    "puppeteer": "^5.5.0"
+    "puppeteer": "^5.5.0",
+    "minimist": "^1.2.5",
+    "x-ray": "^2.3.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

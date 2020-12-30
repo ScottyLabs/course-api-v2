@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { userSchema } from '../models/userModel';
+import { userSchema } from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
