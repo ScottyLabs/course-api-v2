@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
 import routes from './controllers/index.js';
@@ -20,8 +19,8 @@ mongoose.connect(database, {
 app.use(cors());
 
 // Set up Body Parser
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 routes(app);
 

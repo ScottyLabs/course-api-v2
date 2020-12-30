@@ -22,7 +22,6 @@
   "homepage": "https://github.com/gramliu/course-api-v2#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "csv-parse": "^4.14.2",
     "dotenv": "^8.2.0",

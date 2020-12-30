@@ -6,6 +6,15 @@ import { standardizeID } from "../api/util.js";
 const FCE = mongoose.model("FCE", fceSchema);
 const resultFilter = "-_id -__v";
 
+/**
+ * Gets FCE by course ID, optionally by instructors and semesters.
+ * Sends FCE via response object.
+ * @param {Object} req request object
+ * @param {string} req.params.courseID course ID
+ * @param {string|string[]} [req.body.instructors] instructor(s) names
+ * @param {string[]} req.body.semesters semesters
+ * @param {Object} res response object
+ */
 export const getFCEWithID = (req, res) => {
   let id = standardizeID(req.params.courseID);
   let query = { courseID: id };
@@ -23,6 +32,11 @@ export const getFCEWithID = (req, res) => {
   }).select(resultFilter);
 };
 
+/**
+ * Gets all FCEs and sends via response object.
+ * @param {Object} req request object
+ * @param {Object} res response object
+ */
 export const getFCEs = (req, res) => {
   FCE.find({}, (err, result) => {
     if (err) return res.status(500).send(err);
