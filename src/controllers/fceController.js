@@ -1,6 +1,6 @@
-import mongoose, { Query } from "mongoose";
-import { fceSchema } from "../models/fceModel";
-import { parseFCEData } from "../api/parser";
+import mongoose from "mongoose";
+import { fceSchema } from "../models/fceModel.js";
+import { parseFCEData } from "../api/parser.js";
 import { standardizeID } from "../api/util.js";
 
 const FCE = mongoose.model("FCE", fceSchema);
