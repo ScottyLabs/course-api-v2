@@ -1,49 +1,51 @@
-import fs from 'fs';
-import Xray from 'x-ray';
-import cheerio from 'cheerio';
+import fs from "fs";
+import Xray from "x-ray";
+import cheerio from "cheerio";
 
 const x = Xray();
 
 const getScheduleUrl = (semester) => {
-  const SEMESTERS = ['spring', 'summer_1', 'summer_2', 'fall'];
+  const SEMESTERS = ["spring", "summer_1", "summer_2", "fall"];
 
-	if (!SEMESTERS.includes(semester)) {
-    throw new Error(`semester should be one of [${SEMESTERS.join(', ')}].`);
-	}
+  if (!SEMESTERS.includes(semester)) {
+    throw new Error(`semester should be one of [${SEMESTERS.join(", ")}].`);
+  }
 
-	return `https://enr-apps.as.cmu.edu/assets/SOC/sched_layout_${semester}.htm`;
+  return `https://enr-apps.as.cmu.edu/assets/SOC/sched_layout_${semester}.htm`;
 };
 
 const repairHtml = (rawHtml) => {
-  return cheerio.load(rawHtml, {
-    decodeEntities: true
-  }).html();
+  return cheerio
+    .load(rawHtml, {
+      decodeEntities: true,
+    })
+    .html();
 };
 
 const getScheduleRawHtml = async (semester) => {
   const scheduleUrl = getScheduleUrl(semester);
   console.log(`Scraping schedule from ${scheduleUrl}`);
 
-  return await x(scheduleUrl, 'body@html');
+  return await x(scheduleUrl, "body@html");
 };
 
 export const getScheduleJson = async (semester) => {
   const rawHtml = await getScheduleRawHtml(semester);
   const repairedHtml = repairHtml(rawHtml);
-  
+
   return await x(repairedHtml, {
-    runDate: 'p:nth-child(1) > b',
-    semester: 'p:nth-child(1) > b > b',
-    rows: x('tbody tr', [['td']])
+    runDate: "p:nth-child(1) > b",
+    semester: "p:nth-child(1) > b > b",
+    rows: x("tbody tr", [["td"]]),
   });
 };
 
 const parseRows = (rows) => {
-  console.log('Parsing schedule...');
+  console.log("Parsing schedule...");
   const isSubjectRow = (row) =>
-    /\S/.test(row[0]) && row.slice(1).every(el => el.trim() === '');
+    /\S/.test(row[0]) && row.slice(1).every((el) => el.trim() === "");
 
-  let currentDepartment = '';
+  let currentDepartment = "";
 
   let courses = [];
   let departments = [];
@@ -53,13 +55,13 @@ const parseRows = (rows) => {
 
   for (const row of rows.slice(2)) {
     if (isSubjectRow(row)) {
-      console.log('Encountered subject row', row[0]);
+      console.log("Encountered subject row", row[0]);
       currentDepartment = row[0];
       departments.push(currentDepartment);
       continue;
     }
 
-    if (row[0].trim() !== '') {
+    if (row[0].trim() !== "") {
       if (Object.keys(courseObj).length !== 0) {
         if (Object.keys(sectionObj).length !== 0) {
           courseObj.sections.push(sectionObj);
@@ -72,23 +74,23 @@ const parseRows = (rows) => {
         name: row[1],
         units: row[2],
         department: currentDepartment,
-        sections: []
+        sections: [],
       };
       sectionObj = {};
     }
 
-    if (row[3].trim() !== '') {
+    if (row[3].trim() !== "") {
       if (Object.keys(sectionObj).length !== 0) {
         courseObj.sections.push(sectionObj);
       }
 
       sectionObj = {
         section: row[3],
-        sessions: []
-      }
+        sessions: [],
+      };
     }
 
-    if (!row.slice(3).every(el => el.trim() === '')) {
+    if (!row.slice(3).every((el) => el.trim() === "")) {
       if (row.length < 10) continue;
 
       let sessionObj = {
@@ -97,12 +99,12 @@ const parseRows = (rows) => {
         end: row[6],
         room: row[7],
         location: row[8],
-        instructors: row[9].split(', ')
-      }
+        instructors: row[9].split(", "),
+      };
 
-      if (row[1].trim() != '' && row[1] != courseObj.name)
+      if (row[1].trim() != "" && row[1] != courseObj.name)
         sessionObj.courseName = row[1];
-      
+
       sectionObj.sessions.push(sessionObj);
     }
   }

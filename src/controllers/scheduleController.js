@@ -1,19 +1,10 @@
 import mongoose from "mongoose";
 import { scheduleSchema } from "../models/courseModel.js";
-import fs from "fs";
-import { standardizeID } from "../api/util.js";
+import { standardizeID, singleToArray } from "../api/util.js";
 
 const Schedule = mongoose.model("Schedule", scheduleSchema);
 const resultFilter =
   "-_id -lectures._id -lectures.times._id -sections._id -sections.times._id -__v";
-
-const singleToArray = (param) => {
-  if (param instanceof Array) {
-    return param;
-  } else {
-    return [param];
-  }
-};
 
 export const getSchedule = (req, res) => {
   let courseID = standardizeID(req.params.courseID);
@@ -47,7 +38,7 @@ export const getSchedules = (req, res) => {
         queryBody["year"] = { $in: singleToArray(req.body.year) };
       }
     } else {
-      res.json({ message: "bad query", invalidKey: key });
+      return res.status(400).json({ message: "Bad Request", invalidKey: key });
     }
   }
 
