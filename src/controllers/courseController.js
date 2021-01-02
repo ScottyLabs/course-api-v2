@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { courseSchema } from "../models/courseModel.js";
-import fs from "fs";
-import { standardizeID } from "../api/util.js";
+import { standardizeID, singleToArray } from "../api/util.js";
 
 const Course = mongoose.model("Course", courseSchema);
 const resultFilter =
@@ -48,18 +47,19 @@ export const getCourses = (req, res) => {
   let queryBody = new Object();
   for (var key in req.body) {
     if (requestParams.includes(key)) {
-      if (key == "prereqs" && req.body.prereqs instanceof Array) {
-        queryBody["prereqs"] = { $in: req.body.prereqs };
-      } else if (key == "coreqs" && req.body.coreqs instanceof Array) {
-        queryBody["coreqs"] = { $in: req.body.coreqs };
+      if (key === "courseID") {
+        queryBody["courseID"] = {
+          $in: singleToArray(req.body.courseID).map(standardizeID),
+        };
+      } else if (key === "prereqs") {
+        queryBody["prereqs"] = { $in: singleToArray(req.body.prereqs) };
+      } else if (key === "coreqs") {
+        queryBody["prereqs"] = { $in: singleToArray(req.body.coreqs) };
       } else {
         queryBody[key] = req.body[key];
-        if (key == "courseID") {
-          queryBody[key] = standardizeID(queryBody[key]);
-        }
       }
     } else {
-      res.json({ message: "bad query", invalidKey: key });
+      return res.status(400).json({ message: "Bad Request", invalidKey: key });
     }
   }
   Course.find(queryBody, (err, course) => {
