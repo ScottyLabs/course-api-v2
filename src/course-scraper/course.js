@@ -1,26 +1,30 @@
-import fs from 'fs';
-import Xray from 'x-ray';
-import cheerio from 'cheerio';
+import fs from "fs";
+import Xray from "x-ray";
+import cheerio from "cheerio";
 
-const x = Xray().throttle(4, '1s');
+const x = Xray().throttle(4, "1s");
 
 const repairHtml = (rawHtml) => {
-  return cheerio.load(rawHtml, {
-    decodeEntities: true
-  }).html();
+  return cheerio
+    .load(rawHtml, {
+      decodeEntities: true,
+    })
+    .html();
 };
 
 const getCourseDetailsUrl = (courseId, semester) => {
-  courseId = courseId.toString().replace('-', '');
+  courseId = courseId.toString().replace("-", "");
 
-  return `https://enr-apps.andrew.cmu.edu/open/SOC/SOCServlet/courseDetails?` +
-    `COURSE=${courseId}&SEMESTER=${semester}`;
+  return (
+    `https://enr-apps.andrew.cmu.edu/open/SOC/SOCServlet/courseDetails?` +
+    `COURSE=${courseId}&SEMESTER=${semester}`
+  );
 };
 
 const getCourseRawHtml = async (courseId, semester, log = true) => {
   const courseDetailsUrl = getCourseDetailsUrl(courseId, semester);
   if (log) console.log(`Scraping course from ${courseDetailsUrl}`);
-  return await x(courseDetailsUrl, '#course-detail-modal-body@html');
+  return await x(courseDetailsUrl, "#course-detail-modal-body@html");
 };
 
 export const getCourseJson = async (courseId, semester, log = true) => {
@@ -28,24 +32,23 @@ export const getCourseJson = async (courseId, semester, log = true) => {
   const repairedHtml = repairHtml(rawHtml);
 
   return await x(repairedHtml, {
-    sectionHeaders: x('.row:nth-child(1) thead tr', ['th']),
-    sectionRows: x('.row:nth-child(1) tbody tr', [['td']]),
-    relatedUrls: x('#course-detail-related-urls ul li', ['a']),
-    specialPermission: '.row:nth-child(2) > div:nth-child(2) dd',
-    description: '#course-detail-description p',
-    prerequisites: '.row:nth-child(5) > div:nth-child(1) dd',
-    corequisites: '.row:nth-child(5) > div:nth-child(2) dd',
-    crossListed: '.row:nth-child(6) > div:nth-child(1) dd',
-    notes: '.row:nth-child(6) > div:nth-child(2) dd',
-    reservationRows: x('.row:nth-child(8) tbody tr', [['td']])
+    sectionHeaders: x(".row:nth-child(1) thead tr", ["th"]),
+    sectionRows: x(".row:nth-child(1) tbody tr", [["td"]]),
+    relatedUrls: x("#course-detail-related-urls ul li", ["a"]),
+    specialPermission: ".row:nth-child(2) > div:nth-child(2) dd",
+    description: "#course-detail-description p",
+    prerequisites: ".row:nth-child(5) > div:nth-child(1) dd",
+    corequisites: ".row:nth-child(5) > div:nth-child(2) dd",
+    crossListed: ".row:nth-child(6) > div:nth-child(1) dd",
+    notes: ".row:nth-child(6) > div:nth-child(2) dd",
+    reservationRows: x(".row:nth-child(8) tbody tr", [["td"]]),
   });
 };
 
 const courseListToArray = (listStr) => {
-  if (listStr.trim() === 'None')
-    return [];
-  
-  return listStr.split(',').map(str => str.trim())
+  if (listStr.trim() === "None") return [];
+
+  return listStr.split(",").map((str) => str.trim());
 };
 
 export const parseCourseJson = (json) => {
@@ -53,10 +56,10 @@ export const parseCourseJson = (json) => {
   if (json?.reservationRows) {
     for (let row of json.reservationRows) {
       let section = row[0].trim();
-      let reservation = row[1].replace('\n\n        ', '').trim();
-      reservation = reservation.replace(/\s+/g, ' ');
+      let reservation = row[1].replace("\n\n        ", "").trim();
+      reservation = reservation.replace(/\s+/g, " ");
 
-      if (section in reservations) reservations[section].push(reservation)
+      if (section in reservations) reservations[section].push(reservation);
       else reservations[section] = [reservation];
     }
   }
@@ -69,7 +72,7 @@ export const parseCourseJson = (json) => {
     let hasSessionColumn = false;
 
     // table has a cancelled column
-    if (json.sectionHeaders.indexOf('Session') != -1) hasSessionColumn = true;
+    if (json.sectionHeaders.indexOf("Session") != -1) hasSessionColumn = true;
     if (json.sectionRows[0].length == 10 + hasSessionColumn ? 1 : 0)
       hasCancelledColumn = true;
 
@@ -78,10 +81,10 @@ export const parseCourseJson = (json) => {
     for (let row of json.sectionRows) {
       let sectionRow = row;
       let cancelled = false;
-      let session = '';
+      let session = "";
 
       if (hasCancelledColumn) {
-        cancelled = row[0] == 'Cancelled';
+        cancelled = row[0] == "Cancelled";
         sectionRow = row.slice(1);
       }
 
@@ -90,36 +93,40 @@ export const parseCourseJson = (json) => {
         sectionRow = sectionRow.slice(1);
       }
 
-      sectionRow = sectionRow.map(str => str.trim());
+      sectionRow = sectionRow.map((str) => str.trim());
 
-      if (sectionRow[0] != '') units = sectionRow[0];
-      if (sectionRow[1] != '') {
-        if (Object.keys(sectionObj).length != 0)
-          sections.push(sectionObj);
+      if (sectionRow[0] != "") units = sectionRow[0];
+      if (sectionRow[1] != "") {
+        if (Object.keys(sectionObj).length != 0) sections.push(sectionObj);
 
         let section = sectionRow[1];
 
         let sectionReservations = [];
         if (section in reservations)
           sectionReservations = reservations[section];
-        
+
         sectionObj = {
-          cancelled, session, section, sessions: [],
-          sectionReservations
+          cancelled,
+          session,
+          section,
+          sessions: [],
+          sectionReservations,
         };
       }
 
-      let instructors = sectionRow[8].split(/\n/).map(str => str.trim())
-        .filter(str => str != '');
+      let instructors = sectionRow[8]
+        .split(/\n/)
+        .map((str) => str.trim())
+        .filter((str) => str != "");
 
       sectionObj.sessions.push({
-        mini: sectionRow[2] == 'Y',
+        mini: sectionRow[2] == "Y",
         days: sectionRow[3],
         begin: sectionRow[4],
         end: sectionRow[5],
         location: sectionRow[6],
         room: sectionRow[7],
-        instructors
+        instructors,
       });
     }
 
@@ -135,6 +142,6 @@ export const parseCourseJson = (json) => {
     corequisites: courseListToArray(json.corequisites),
     crossListed: courseListToArray(json.crossListed),
     notes: json.notes.trim(),
-    description: json.description
-  }
+    description: json.description,
+  };
 };

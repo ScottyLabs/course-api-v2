@@ -12,7 +12,6 @@ const argv = parseArgs(process.argv.slice(2), {});
 console.log(argv);
 
 (async () => {
-
   const scheduleFile = path.join(argv.dir, "schedule.json");
   const detailsFile = path.join(argv.dir, "details.json");
   const cleanedFile = path.join(argv.dir, "cleaned.json");
@@ -40,9 +39,9 @@ console.log(argv);
     await cli({
       courses: true,
       _: [detailsFile],
-      i: scheduleFile
+      i: scheduleFile,
     });
-  } catch(e) {
+  } catch (e) {
     console.log("Encountered error while scraping courses.");
     console.log(e);
     return;
@@ -55,21 +54,21 @@ console.log(argv);
       cleanup: true,
       _: [cleanedFile],
       schedules: scheduleFile,
-      details: detailsFile
-    }); 
-  } catch(e) {
+      details: detailsFile,
+    });
+  } catch (e) {
     console.log("Encountered error while scraping courses.");
     console.log(e);
-    return; 
+    return;
   }
 
   // 4. UPLOAD TO MONGO
   console.log("4. Uploading to Database");
   try {
     await cli({
-      upload: [cleanedFile]
+      upload: [cleanedFile],
     });
-  } catch(e) {
+  } catch (e) {
     console.log("Encountered error while uploading to MongoDB.");
     console.log(e);
     return;

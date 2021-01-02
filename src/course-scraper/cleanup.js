@@ -104,30 +104,32 @@ const cleanUpSession = (sessionJson) => {
     days: daysStrToList(sessionJson.days),
     begin: sessionJson.begin,
     end: sessionJson.end,
-    ...roomStrToBuildingRoom(sessionJson.room)
+    ...roomStrToBuildingRoom(sessionJson.room),
   };
 };
 
 const getInstructors = (rowJson) => {
-  let instructors = rowJson.sessions.map(session => session.instructors).flat();
+  let instructors = rowJson.sessions
+    .map((session) => session.instructors)
+    .flat();
   return [...new Set(instructors)];
-}
+};
 
 const getLocation = (rowJson) => {
-  let locations = rowJson.sessions.map(session => session.location).flat();
+  let locations = rowJson.sessions.map((session) => session.location).flat();
   locations = [...new Set(locations)];
   if (locations.length !== 1) {
     console.log(`Had more than one location for ${rowJson.section}.`);
   }
   return locations[0];
-}
+};
 
 const cleanUpLecSec = (rowJson) => {
   return {
     name: rowJson.section,
     instructors: getInstructors(rowJson),
     times: rowJson.sessions.map((session) => cleanUpSession(session)),
-    location: getLocation(rowJson)
+    location: getLocation(rowJson),
   };
 };
 
@@ -197,15 +199,14 @@ export const cleanUp = (scheduleJson, detailsJson) => {
       ];
 
       for (const summerSession of summerSessionNames) {
-
         let sessionSchedule = {
           ...baseSchedule,
           lectures: [],
           sections: [],
-          session: summerSession === '' ? null : summerSession
+          session: summerSession === "" ? null : summerSession,
         };
 
-        const sessionRows = scrapedCourse.sections.filter(section => {
+        const sessionRows = scrapedCourse.sections.filter((section) => {
           if (section.cancelled) return false;
           return section.session === summerSession;
         });
@@ -214,7 +215,7 @@ export const cleanUp = (scheduleJson, detailsJson) => {
 
         for (const [idx, row] of sessionRows.entries()) {
           if (row.cancelled) continue;
-  
+
           if (isLecture(row.section, idx === 0)) {
             let lecture = cleanUpLecture(row);
             sessionSchedule.lectures.push(lecture);

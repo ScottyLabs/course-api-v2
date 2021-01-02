@@ -9,7 +9,8 @@
     "dev": "nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/app.js",
-    "course-scrape": "node src/course-scraper/scrape.js"
+    "course-scrape": "node src/course-scraper/scrape.js",
+    "format": "npx prettier --write src/**/*.{tsx,ts,js,css,html}"
   },
   "repository": {
     "type": "git",

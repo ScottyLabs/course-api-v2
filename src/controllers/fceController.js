@@ -23,7 +23,7 @@ export const getFCEWithID = (req, res) => {
   if (req.body.semesters) {
     query.semester = { $in: req.body.semesters };
   }
-  
+
   FCE.find(query, (err, fce) => {
     if (err) return res.status(500).send(err);
     if (!fce) return res.status(404).json({ message: "Unknown course ID" });
@@ -43,7 +43,7 @@ export const getFCEs = (req, res) => {
     "year",
     "semester",
     "college",
-    "andrewID"
+    "andrewID",
   ];
   let queryBody = new Object();
   for (var key in req.body) {
