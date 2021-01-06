@@ -1,6 +1,6 @@
 import fs from "fs";
 import mongoose from "mongoose";
-import { fceSchema } from "../models/fceModel.js";
+import { fceSchema } from "../../models/fceModel.js";
 import dotenv from "dotenv";
 
 dotenv.config();

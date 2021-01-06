@@ -1,4 +1,4 @@
-import { FCEEntry } from "../models/fceEntry.js";
+import { FCEEntry } from "../../models/fceEntry.js";
 import fs from "fs";
 import parse from "csv-parse/lib/sync.js";
 
@@ -14,7 +14,7 @@ export const parseFCEData = async () => {
     "department",
     "courseID",
     "courseName",
-    "level" /*'trait',*/,
+    "level",
     "numRespondents",
     "possibleRespondents",
     "responseRate",
@@ -32,12 +32,12 @@ export const parseFCEData = async () => {
 
   //processes all section by section analyses
   let fceDocuments = [];
-  let filenames = fs.readdirSync("./src/scraper/FCEFiles", "UTF8");
+  let filenames = fs.readdirSync("./src/scraper/fce/FCEFiles", "UTF8");
   console.log("\nCurrent directory filenames:");
   for (let name of filenames) {
     console.log(name);
 
-    let content = fs.readFileSync("./src/scraper/FCEFiles/" + name, "UTF8"); //changed this
+    let content = fs.readFileSync("./src/scraper/fce/FCEFiles/" + name, "UTF8"); //changed this
     let entries = parse(content, {
       skip_empty_lines: true,
     });
