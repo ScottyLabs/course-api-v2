@@ -10,18 +10,18 @@ const resultFilter = "-_id -__v";
  * Sends FCE via response object.
  * @param {Object} req request object
  * @param {string} req.params.courseID course ID
- * @param {string|string[]} [req.body.instructors] instructor(s) names
- * @param {string[]} req.body.semesters semesters
+ * @param {string|string[]} [req.query.instructors] instructor(s) names
+ * @param {string[]} req.query.semesters semesters
  * @param {Object} res response object
  */
 export const getFCEWithID = (req, res) => {
   let id = standardizeID(req.params.courseID);
   let query = { courseID: id };
-  if (req.body.instructors) {
-    query.instructor = { $in: req.body.instructors };
+  if (req.query.instructors) {
+    query.instructor = { $in: req.query.instructors };
   }
-  if (req.body.semesters) {
-    query.semester = { $in: req.body.semesters };
+  if (req.query.semesters) {
+    query.semester = { $in: req.query.semesters };
   }
 
   FCE.find(query, (err, fce) => {
@@ -46,18 +46,18 @@ export const getFCEs = (req, res) => {
     "andrewID",
   ];
   let queryBody = new Object();
-  for (var key in req.body) {
+  for (var key in req.query) {
     if (requestParams.includes(key)) {
       if (key === "courseID") {
         queryBody["courseID"] = {
-          $in: singleToArray(req.body.courseID).map(standardizeID),
+          $in: singleToArray(req.query.courseID).map(standardizeID),
         };
       } else if (key == "semester") {
-        queryBody["semester"] = { $in: singleToArray(req.body.semester) };
+        queryBody["semester"] = { $in: singleToArray(req.query.semester) };
       } else if (key == "year") {
-        queryBody["year"] = { $in: singleToArray(req.body.year) };
+        queryBody["year"] = { $in: singleToArray(req.query.year) };
       } else {
-        queryBody[key] = req.body[key];
+        queryBody[key] = req.query[key];
       }
     } else {
       return res.status(400).json({ message: "Bad Request", invalidKey: key });

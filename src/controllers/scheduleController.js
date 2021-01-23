@@ -26,16 +26,16 @@ export const getSchedules = (req, res) => {
   let requestParams = ["courseID", "semester", "year"];
   let queryBody = new Object();
 
-  for (const key in req.body) {
+  for (const key in req.query) {
     if (requestParams.includes(key)) {
       if (key == "courseID") {
         queryBody["courseID"] = {
-          $in: singleToArray(req.body.courseID).map(standardizeID),
+          $in: singleToArray(req.query.courseID).map(standardizeID),
         };
       } else if (key == "semester") {
-        queryBody["semester"] = { $in: singleToArray(req.body.semester) };
+        queryBody["semester"] = { $in: singleToArray(req.query.semester) };
       } else if (key == "year") {
-        queryBody["year"] = { $in: singleToArray(req.body.year) };
+        queryBody["year"] = { $in: singleToArray(req.query.year) };
       }
     } else {
       return res.status(400).json({ message: "Bad Request", invalidKey: key });
