@@ -33,6 +33,7 @@ const section = [
     name: String,
     instructors: [String],
     location: String,
+    lecture: String
   },
 ];
 

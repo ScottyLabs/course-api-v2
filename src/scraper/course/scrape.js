@@ -3,7 +3,7 @@ import { getScheduleJson, parseScheduleJson } from "./schedule.js";
 import { getCourseJson, parseCourseJson } from "./course.js";
 import { cleanUp } from "./cleanup.js";
 import dotenv from "dotenv";
-import { courseSchema, scheduleSchema } from "../models/courseModel.js";
+import { courseSchema, scheduleSchema } from "../../models/courseModel.js";
 import mongoose from "mongoose";
 
 dotenv.config();
@@ -18,6 +18,8 @@ mongoose.connect(database, {
 
 const Course = mongoose.model("Course", courseSchema);
 const Schedule = mongoose.model("Schedule", scheduleSchema);
+
+console.log("test");
 
 export const scrapeCourseIds = async (courseIds, shortSem) => {
   console.log(`Scraping ${courseIds.length} courses for ${shortSem}...`);
