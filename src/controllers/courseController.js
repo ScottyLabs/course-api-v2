@@ -25,12 +25,12 @@ export const getCourseWithID = (req, res) => {
  * Get courses by different parameters.
  * Sends the course objects via response object.
  * @param {Object} req request object
- * @param {String[]} [req.body.prereqs] prerequisite courses by course IDs
- * @param {String[]} [req.body.coreqs] corequisite courses by course IDs
- * @param {String} [req.body.courseID] course ID of course
- * @param {String} [req.body.name] name of course
- * @param {String} [req.body.department] department of course
- * @param {String} [req.body.units] number of units
+ * @param {String[]} [req.query.prereqs] prerequisite courses by course IDs
+ * @param {String[]} [req.query.coreqs] corequisite courses by course IDs
+ * @param {String} [req.query.courseID] course ID of course
+ * @param {String} [req.query.name] name of course
+ * @param {String} [req.query.department] department of course
+ * @param {String} [req.query.units] number of units
  * @param {Object} res response object
  */
 export const getCourses = (req, res) => {
@@ -43,18 +43,18 @@ export const getCourses = (req, res) => {
     "coreqs",
   ];
   let queryBody = new Object();
-  for (var key in req.body) {
+  for (var key in req.query) {
     if (requestParams.includes(key)) {
       if (key === "courseID") {
         queryBody["courseID"] = {
-          $in: singleToArray(req.body.courseID).map(standardizeID),
+          $in: singleToArray(req.query.courseID).map(standardizeID),
         };
       } else if (key === "prereqs") {
-        queryBody["prereqs"] = { $in: singleToArray(req.body.prereqs) };
+        queryBody["prereqs"] = { $in: singleToArray(req.query.prereqs) };
       } else if (key === "coreqs") {
-        queryBody["prereqs"] = { $in: singleToArray(req.body.coreqs) };
+        queryBody["prereqs"] = { $in: singleToArray(req.query.coreqs) };
       } else {
-        queryBody[key] = req.body[key];
+        queryBody[key] = req.query[key];
       }
     } else {
       return res.status(400).json({ message: "Bad Request", invalidKey: key });
