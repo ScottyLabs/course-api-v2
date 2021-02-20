@@ -6,6 +6,7 @@ const Schedule = mongoose.model("Schedule", scheduleSchema);
 const resultFilter =
   "-_id -lectures._id -lectures.times._id -sections._id -sections.times._id -__v";
 
+// TODO: Currently unused
 export const getSchedule = (req, res) => {
   let courseID = standardizeID(req.params.courseID);
   let semester = req.params.semester;
@@ -22,6 +23,15 @@ export const getSchedule = (req, res) => {
   }).select(resultFilter);
 };
 
+/**
+ * Get a schedule by the filter parameters. Empty filter will return all.
+ * Sends the course object via response object.
+ * @param {Object} req request object
+ * @param {string} req.params.courseID course ID
+ * @param {string} req.params.semester semester to filter
+ * @param {string} req.params.year year to filter
+ * @param {Object} res response object
+ */
 export const getSchedules = (req, res) => {
   let requestParams = ["courseID", "semester", "year"];
   let queryBody = new Object();
