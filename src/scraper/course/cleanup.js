@@ -149,7 +149,7 @@ export const cleanUp = (scheduleJson, detailsJson) => {
   const isLecture = (letter, isFirstLine) => {
     letter = letter.toLowerCase();
 
-    if (isFirstLine) return /lec|w|\d+/.test(letter);
+    if (isFirstLine) return /lec|[w-z]|\d+/.test(letter);
     else return /\d+/.test(letter);
   };
 

@@ -19,8 +19,6 @@ mongoose.connect(database, {
 const Course = mongoose.model("Course", courseSchema);
 const Schedule = mongoose.model("Schedule", scheduleSchema);
 
-console.log("test");
-
 export const scrapeCourseIds = async (courseIds, shortSem) => {
   console.log(`Scraping ${courseIds.length} courses for ${shortSem}...`);
   let scraped = [];
