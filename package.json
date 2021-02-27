@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "start": "npm run build && npm run serve",
-    "dev": "nodemon ./src/app.js --exec babel-node -e js",
+    "start": "npm run build && doppler run -- npm run serve",
+    "dev": "doppler run -- nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/app.js",
     "course-scrape": "npm run build && node dist/scraper/course/scrape.js",
