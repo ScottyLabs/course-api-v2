@@ -1,0 +1,556 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This API serves course and course evaluation data for Carnegie Mellon University.",
+    "version": "1.1.0",
+    "title": "ScottyLabs Course API",
+    "contact": {
+      "name": "ScottyLabs",
+      "email": "hello@scottylabs.org",
+      "url": "https://scottylabs.org"
+    }
+  },
+  "host": "course.apis.scottylabs.org",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "courses",
+      "description": "Course information and descriptions"
+    },
+    {
+      "name": "fces",
+      "description": "Faculty Course Evaluations and student surveys"
+    },
+    {
+      "name": "schedules",
+      "description": "Course schedules per semester"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/courses": {
+      "get": {
+        "tags": [
+          "courses"
+        ],
+        "summary": "Retrieve course descriptions",
+        "description": "",
+        "operationId": "getCourses",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "courseID",
+            "description": "five-digit course ID (e.g. 12-345)",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "name of course",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "department",
+            "description": "department of course",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "units",
+            "description": "number of units",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "prereqs",
+            "description": "prerequisite courses",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "coreqs",
+            "description": "corequisite courses",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Courses"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/courses/courseID/{courseID}": {
+      "get": {
+        "tags": [
+          "courses"
+        ],
+        "summary": "Retrieve course descriptions by courseID",
+        "description": "",
+        "operationId": "getCourseByID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "courseID",
+            "description": "five-digit course ID (e.g. 12-345)",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          },
+          "404": {
+            "description": "Unknown course ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/fces": {
+      "get": {
+        "tags": [
+          "fces"
+        ],
+        "summary": "Retreive faculty course evaluations",
+        "description": "",
+        "operationId": "getFCEs",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "courseID",
+            "description": "five-digit course ID (e.g. 12-345)",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "name of course",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "college",
+            "description": "college (department) of course",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "description": "years to filter",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "semester",
+            "description": "semesters to filter",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "andrewID",
+            "description": "Andrew ID of instructor",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/FCEs"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/fces/courseID/{courseID}": {
+      "get": {
+        "tags": [
+          "fces"
+        ],
+        "summary": "Retreive faculty course evaluations by courseID",
+        "description": "",
+        "operationId": "getFCEsByID",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "courseID",
+            "description": "five-digit course ID (e.g. 12-345)",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "instructors",
+            "description": "instructors to filter (can also be an array of strings)",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "semesters",
+            "description": "semesters to filter",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/FCEs"
+            }
+          },
+          "404": {
+            "description": "Unknown course ID"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/schedules": {
+      "get": {
+        "tags": [
+          "schedules"
+        ],
+        "summary": "Retrieve schedules for a course",
+        "description": "",
+        "operationId": "getSchedules",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "courseID",
+            "description": "five-digit course ID (e.g. 12-345)",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "semester",
+            "description": "semester to filter",
+            "type": "string",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "description": "year to filter",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Schedules"
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Course": {
+      "type": "object",
+      "properties": {
+        "prereqs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prereqString": {
+          "type": "string"
+        },
+        "coreqs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "crosslisted": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "units": {
+          "type": "string"
+        }
+      }
+    },
+    "Courses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Course"
+      }
+    },
+    "FCE": {
+      "type": "object",
+      "properties": {
+        "rating": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "float",
+            "maxItems": 9
+          },
+          "description": "In order: (0) Interest in student learning, (1) Clearly explain course requirements, (2) Clear learning objectives & goals, (3) Instructors provide feedback to students to improve, (4) Demonstrate importance of subject matter, (5) Explains subject matter of course, (6) Show respect for all students, (7) Overall teaching rate, (8) Overall course rate"
+        },
+        "year": {
+          "type": "string"
+        },
+        "semester": {
+          "type": "string"
+        },
+        "college": {
+          "type": "string"
+        },
+        "instructor": {
+          "type": "string"
+        },
+        "andrewID": {
+          "type": "string",
+          "description": "Andrew ID of the instructor"
+        },
+        "courseName": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string"
+        },
+        "numRespondents": {
+          "type": "integer"
+        },
+        "responseRate": {
+          "type": "string"
+        },
+        "hrsPerWeek": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "FCEs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/FCE"
+      }
+    },
+    "Lecture": {
+      "type": "object",
+      "properties": {
+        "instructors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "times": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "days": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 6
+                }
+              },
+              "begin": {
+                "type": "string",
+                "description": "Format as time HH:MMAM"
+              },
+              "end": {
+                "type": "string",
+                "description": "Format as time HH:MMAM"
+              },
+              "building": {
+                "type": "string"
+              },
+              "room": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "Section": {
+      "type": "object",
+      "properties": {
+        "instructors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "times": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "days": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 6
+                }
+              },
+              "begin": {
+                "type": "string",
+                "description": "Format as time HH:MMAM"
+              },
+              "end": {
+                "type": "string",
+                "description": "Format as time HH:MMAM"
+              },
+              "building": {
+                "type": "string"
+              },
+              "room": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "location": {
+          "type": "string"
+        },
+        "lecture": {
+          "type": "string",
+          "description": "name of associated lecture"
+        }
+      }
+    },
+    "Schedule": {
+      "type": "object",
+      "properties": {
+        "courseID": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer"
+        },
+        "semester": {
+          "type": "string"
+        },
+        "lectures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Lecture"
+          }
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Section"
+          }
+        }
+      }
+    },
+    "Schedules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Schedule"
+      }
+    }
+  }
+}
