@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const lecture = [
   {
@@ -46,7 +47,19 @@ export const courseSchema = new mongoose.Schema({
   name: String,
   units: String,
   department: String,
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
+
+courseSchema.virtual('schedules', {
+  ref: 'Schedules',
+  localField: 'courseID',
+  foreignField: 'courseID',
+  justOne: false
+});
+
+courseSchema.plugin(mongoosePaginate);
 
 export const scheduleSchema = new mongoose.Schema({
   courseID: String,
