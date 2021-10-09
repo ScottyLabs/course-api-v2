@@ -8,7 +8,7 @@
     "dev": "doppler run -- nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
     "serve": "node dist/app.js",
-    "course-scrape": "npm run build && node dist/scraper/course/scrape.js",
+    "course-scrape": "npm run build && doppler run -- node dist/scraper/course/scrape.js",
     "format": "npx prettier --write src/**/*.{tsx,ts,js,css,html}"
   },
   "repository": {
@@ -56,6 +56,7 @@
     "@babel/plugin-proposal-throw-expressions": "^7.0.0",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
     "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.15.8",
     "@babel/preset-env": "^7.0.0",
     "nodemon": "^2.0.7"
   }

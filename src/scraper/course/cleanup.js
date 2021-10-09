@@ -149,7 +149,7 @@ export const cleanUp = (scheduleJson, detailsJson) => {
   const isLecture = (letter, isFirstLine) => {
     letter = letter.toLowerCase();
 
-    if (isFirstLine) return /lec|w|\d+/.test(letter);
+    if (isFirstLine) return /lec|[w-z]|\d+/.test(letter);
     else return /\d+/.test(letter);
   };
 
@@ -176,14 +176,18 @@ export const cleanUp = (scheduleJson, detailsJson) => {
       baseSchedule.lectures = [];
       baseSchedule.sections = [];
 
+      let currentLecture = undefined;
+
       for (const [idx, row] of scrapedCourse.sections.entries()) {
         if (row.cancelled) continue;
 
         if (isLecture(row.section, idx === 0)) {
           let lecture = cleanUpLecture(row);
           baseSchedule.lectures.push(lecture);
+          currentLecture = lecture.name;
         } else {
           let section = cleanUpSection(row);
+          section.lecture = currentLecture;
           baseSchedule.sections.push(section);
         }
       }
@@ -213,14 +217,18 @@ export const cleanUp = (scheduleJson, detailsJson) => {
 
         if (sessionRows.length === 0) continue;
 
+        let currentLecture = undefined;
+
         for (const [idx, row] of sessionRows.entries()) {
           if (row.cancelled) continue;
 
           if (isLecture(row.section, idx === 0)) {
             let lecture = cleanUpLecture(row);
             sessionSchedule.lectures.push(lecture);
+            currentLecture = lecture.name;
           } else {
             let section = cleanUpSection(row);
+            section.lecture = currentLecture;
             sessionSchedule.sections.push(section);
           }
         }
