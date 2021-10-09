@@ -7,8 +7,8 @@
     "start": "npm run build && doppler run -- npm run serve",
     "dev": "doppler run -- nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
-    "serve": "doppler run -- node dist/app.js",
-    "course-scrape": "doppler run -- npm run build && node dist/scraper/course/scrape.js",
+    "serve": "node dist/app.js",
+    "course-scrape": "npm run build && doppler run -- node dist/scraper/course/scrape.js",
     "format": "npx prettier --write src/**/*.{tsx,ts,js,css,html}"
   },
   "repository": {
