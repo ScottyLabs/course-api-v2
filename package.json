@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "start": "doppler run -- npm run build && npm run serve",
+    "start": "npm run build && doppler run -- npm run serve",
     "dev": "doppler run -- nodemon ./src/app.js --exec babel-node -e js",
     "build": "babel src --out-dir dist",
     "serve": "doppler run -- node dist/app.js",
