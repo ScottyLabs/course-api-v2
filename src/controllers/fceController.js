@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { fceSchema } from "../models/fceModel.js";
 import { standardizeID, singleToArray } from "../api/util.js";
+import { verifyUserToken } from "./userController.js";
 
 const FCE = mongoose.model("FCE", fceSchema);
 const resultFilter = "-_id -__v";

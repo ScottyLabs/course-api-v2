@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/gramliu/course-api-v2#readme",
   "dependencies": {
+    "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.3",
@@ -33,6 +34,7 @@
     "minimist": "^1.2.5",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.8",
+    "node-cron": "^3.0.0",
     "puppeteer": "^5.5.0",
     "x-ray": "^2.1.0"
   },

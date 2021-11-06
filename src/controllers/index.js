@@ -1,7 +1,8 @@
 import { getCourses, getCourseWithID } from "./courseController.js";
 import { getFCEWithID, getFCEs } from "./fceController.js";
 import { getSchedules } from "./scheduleController.js";
-import path from 'path';
+import path from "path";
+import { login, isUser, signRequest } from "./userController.js";
 
 const routes = (app) => {
   app.route("/courses").get(getCourses);
@@ -14,13 +15,16 @@ const routes = (app) => {
     res.send({ message: "200" });
   });
 
-  app.route("/fces").get(getFCEs);
+  app.route("/fces").post(isUser, getFCEs);
 
-  app.route("/fces/courseID/:courseID").get(getFCEWithID);
+  app.route("/fces/courseID/:courseID").post(isUser, getFCEWithID);
+
+  app.route("/auth/login").post(login);
+  app.route("/auth/signRequest").get(signRequest);
 
   app.route("/swagger").get((req, res) => {
     res.sendFile(path.resolve("./swagger.json"));
-  })
+  });
 };
 
 export default routes;
