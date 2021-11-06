@@ -7,8 +7,8 @@ export const profSchema = new mongoose.Schema({
     {
       courseID: String, 
       hrsPerWeek: Number,
-      teaching: Number,
-      overall: Number,
+      teachingRating: Number,
+      overallRating: Number,
       semesters: [{year: String, semester: String}]
     }],
   respectForStudents: Number,
