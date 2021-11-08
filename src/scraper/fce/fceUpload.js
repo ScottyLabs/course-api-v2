@@ -21,7 +21,28 @@ const fceUpload = async () => {
   console.log(fces.length);
   let count = 0;
 
+  let courses = new Set();
+
   for (let entry of fces) {
+    console.log(entry.courseID, entry.semester, entry.year);
+    
+    const docs = await FCE.find({
+      courseID: entry.courseID,
+      year: entry.year,
+      semester: entry.semester,
+    });
+
+    if (docs.length > 0 && !courses.has(entry.courseID)) {
+      console.log(`Found data for ${entry.courseID}, deleting and rewriting...`);
+      await FCE.find({
+        courseID: entry.courseID,
+        year: entry.year,
+        semester: entry.semester,
+      }).deleteMany();
+    }
+
+    courses.add(entry.courseID);
+
     const document = new FCE(entry);
     await document.save();
     count++;

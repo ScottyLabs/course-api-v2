@@ -24,6 +24,10 @@ export class FCEEntry {
   }
 
   _insertDash(courseID) {
+    if (courseID.length < 5) {
+      courseID = `0${courseID}`;
+    }
+
     if (courseID.charAt(2) != "-") {
       return courseID.substring(0, 2) + "-" + courseID.substring(2);
     }
@@ -90,6 +94,7 @@ export class FCEEntry {
           break;
         case "college":
         case "department":
+        case "section":
         case "location":
         case "level":
         case "possibleRespondents":
@@ -148,30 +153,41 @@ export class FCEEntry {
   async addLocation() {
     try {
       const schedule = await Schedule.findOne({
-        courseID: this.courseID,
+        courseID: `${this.courseID}`,
         year: this.year,
         semester: this.semester,
       });
+      console.log({
+        courseID: `${this.courseID}`,
+        year: this.year,
+        semester: this.semester,
+      }, this.section);
       if (schedule != null) {
         if (schedule.lectures != null) {
           for (let lecture of schedule.lectures) {
             if (
+              lecture.name === this.section ||
               lecture.instructors
                 .map((x) => x.toUpperCase())
                 .includes(this.instructor)
             ) {
               this.location = lecture.location;
+              console.log(this.location);
+              return;
             }
           }
         }
-        if (schedule.locations != null) {
+        if (schedule.sections != null) {
           for (let section of schedule.sections) {
             if (
+              section.name === this.section ||
               section.instructors
                 .map((x) => x.toUpperCase())
                 .includes(this.instructor)
             ) {
               this.location = section.location;
+              console.log(this.location);
+              return;
             }
           }
         }

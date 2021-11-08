@@ -9,10 +9,10 @@ export const parseFCEData = async () => {
   let headerLabels = [
     "semester",
     "college",
-    "instructor",
-    "andrewID",
     "department",
     "courseID",
+    "section",
+    "instructor",
     "courseName",
     "level",
     "numRespondents",
@@ -43,7 +43,7 @@ export const parseFCEData = async () => {
     });
     console.log(entries.length);
     let entriesCount = 0;
-    let year = name.split("_")[2].substr(0, 4); //new
+    let year = 2021; //new
     entries.shift();
     for (let data of entries) {
       let dataArray = [];

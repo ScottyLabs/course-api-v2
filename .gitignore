@@ -4,3 +4,4 @@ data
 dist
 *.csv
 results
+src/scraper/fce/FCEFiles
