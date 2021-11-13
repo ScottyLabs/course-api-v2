@@ -6,7 +6,7 @@ import { scheduleSchema } from "../models/courseModel";
 let JWT_PUBKEY;
 
 async function getLoginKey() {
-  await axios.get("https://login.scottylabs.org/login/pubkey").data;
+  JWT_PUBKEY = (await axios.get("https://login.scottylabs.org/login/pubkey")).data;
 }
 
 if (!JWT_PUBKEY) {
