@@ -66,7 +66,7 @@ console.log(argv);
   console.log("4. Uploading to Database");
   try {
     await cli({
-      upload: [cleanedFile],
+      upload: cleanedFile,
     });
   } catch (e) {
     console.log("Encountered error while uploading to MongoDB.");
