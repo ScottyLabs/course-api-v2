@@ -6,7 +6,8 @@ export const profSchema = new mongoose.Schema({
   courses: [
     {
       courseID: String, 
-      hrsPerWeek: Number,
+      yearHrsPerWeek: Number,
+      summerHrsPerWeek: Number,
       teachingRating: Number,
       overallRating: Number,
       semesters: [{year: String, semester: String}]
@@ -14,4 +15,4 @@ export const profSchema = new mongoose.Schema({
   respectForStudents: Number,
   interestInLearning: Number,
   providesFeedback: Number,
-})
+});
