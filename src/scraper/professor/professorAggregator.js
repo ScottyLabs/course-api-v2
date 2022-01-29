@@ -1,9 +1,23 @@
 import mongoose from "mongoose";
-import { fceSchema } from "../models/fceModel.js";
+import fs from "fs";
+import { fceSchema } from "../../models/fceModel.js";
+import dotenv from "dotenv";
+import * as mongodb from 'mongodb';
 
-const FCE = mongoose.model("FCE", fceSchema);
+dotenv.config();
+const database = process.env.MONGODB_URI || "mongodb://localhost:27017";
 
-let ratings = FCE.aggregate([
+// Connect to MongoDB
+mongoose.Promise = global.Promise;
+mongoose.connect(database, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+var db = mongoose.connection;
+const FCEs = db.collection("fces");
+
+let ratings = FCEs.aggregate([
     {
         //Group course offerings by instructor, averaging overall ratings
         $group: {
@@ -118,8 +132,26 @@ let ratings = FCE.aggregate([
             interestInLearning: {$first: "$interestInLearning"},
             providesFeedback: {$first: "$providesFeedback"}
         }
+    }],
+    (err, cursor) => {
+        if (err) console.log("Failed to get data.");
+        else {
+            cursor.toArray((error, documents) => {
+                if (error) { console.log("Failed to get documents.") }
+                else {
+                    if (!fs.existsSync("./results")) {
+                        fs.mkdirSync("./results");
+                    }
+                    fs.writeFile(
+                        "./results/profs.json",
+                        JSON.stringify(documents, null, 2),
+                        function (err) {
+                            console.log(err);
+                            process.exit();
+                        }
+                    );
+                }
+            });
+        }
     }
-]);
-
-console.log(ratings);
-
+);
