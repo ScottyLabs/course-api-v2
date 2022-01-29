@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 import fs from "fs";
-import { fceSchema } from "../../models/fceModel.js";
 import dotenv from "dotenv";
-import * as mongodb from 'mongodb';
 
 dotenv.config();
 const database = process.env.MONGODB_URI || "mongodb://localhost:27017";
@@ -17,7 +15,7 @@ mongoose.connect(database, {
 var db = mongoose.connection;
 const FCEs = db.collection("fces");
 
-let ratings = FCEs.aggregate([
+FCEs.aggregate([
     {
         //Group course offerings by instructor, averaging overall ratings
         $group: {
