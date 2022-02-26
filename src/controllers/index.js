@@ -1,6 +1,7 @@
 import { getCourses, getCourseWithID } from "./courseController.js";
 import { getFCEWithID, getFCEs } from "./fceController.js";
 import { getSchedules } from "./scheduleController.js";
+import { getProfWithName } from "./professorController.js";
 import path from 'path';
 
 const routes = (app) => {
@@ -17,6 +18,8 @@ const routes = (app) => {
   app.route("/fces").get(getFCEs);
 
   app.route("/fces/courseID/:courseID").get(getFCEWithID);
+
+  app.route("/professors/profName/:name").get(getProfWithName);
 
   app.route("/swagger").get((req, res) => {
     res.sendFile(path.resolve("./swagger.json"));
