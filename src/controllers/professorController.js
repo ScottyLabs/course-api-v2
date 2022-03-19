@@ -12,7 +12,7 @@ const resultFilter = "-_id -__v";
  * @param {Object} res response object
  */
 export const getProfWithName = (req, res) => {
-    Prof.findOne({ _id: req.params.name.toUpperCase() }, (err, prof) => {
+    Prof.findOne({ name: req.params.name.toUpperCase() }, (err, prof) => {
         if (err) return res.status(500).send(err);
         if (!prof) return res.status(404).send({ message: "Unknown professor name" });
         return res.json(prof);
