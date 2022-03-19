@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 import { courseSchema, scheduleSchema } from "../models/courseModel.js";
+import { fceSchema } from "../models/fceModel.js";
 import { standardizeID, singleToArray } from "../api/util.js";
 
 const Course = mongoose.model("Course", courseSchema);
 const Schedule = mongoose.model("Schedule", scheduleSchema);
+const FCE = mongoose.model("FCE", fceSchema);
 
 const MAX_LIMIT = 10;
 let projection = { _id: false, __v: false };
@@ -19,7 +21,13 @@ export const getFilteredCourses = (req, res) => {
     "keywords",
   ];
 
-  let requestParams = ["page", "limit", "schedules", "schedulesAvailable"];
+  let requestParams = [
+    "page",
+    "limit",
+    "schedules",
+    "schedulesAvailable",
+    "fces",
+  ];
 
   let matchQuery = {};
 
@@ -60,7 +68,11 @@ export const getFilteredCourses = (req, res) => {
   options.populate = [];
 
   if ("schedules" in req.query && req.query.schedules)
-    options.populate.push({ path: "schedules", model: Schedule, select: "-_id" });
+    options.populate.push({
+      path: "schedules",
+      model: Schedule,
+      select: "-_id",
+    });
 
   if ("schedulesAvailable" in req.query && req.query.schedulesAvailable)
     options.populate.push({
@@ -68,6 +80,17 @@ export const getFilteredCourses = (req, res) => {
       model: Schedule,
       select: "year semester session -_id",
     });
+
+  // Can only get FCE information if POST request
+  if (req.method === "POST") {
+    if ("fces" in req.query && req.query.fces) {
+      options.populate.push({
+        path: "fces",
+        model: FCE,
+        select: "-_id",
+      });
+    }
+  }
 
   console.log(options);
   Course.paginate(matchQuery, options)
@@ -83,6 +106,38 @@ export const getCourseInfo = (req, res) => {
     options.populate = { path: "schedules", model: Schedule };
 
   Course.findOne({ courseID }, "-_id -__v", options)
+    .then((result) => res.json(result))
+    .catch((err) => res.status(500).send(err));
+};
+
+export const getCourses = (req, res) => {
+  const courseIDs = singleToArray(req.query.courseID).map(standardizeID);
+
+  let options = { projection, populate: [] };
+  if ("schedulesAvailable" in req.query && req.query.schedulesAvailable)
+    options.populate.push({
+      path: "schedules",
+      model: Schedule,
+      select: "year semester session -_id",
+    });
+
+  if (req.method === "POST") {
+    if ("fces" in req.query && req.query.fces) {
+      options.populate.push({
+        path: "fces",
+        model: FCE,
+        select: "-_id",
+      });
+    }
+  }
+
+  Course.find(
+    {
+      courseID: { $in: courseIDs },
+    },
+    "-__id -__v",
+    options
+  )
     .then((result) => res.json(result))
     .catch((err) => res.status(500).send(err));
 };

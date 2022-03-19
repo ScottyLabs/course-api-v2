@@ -60,6 +60,13 @@ courseSchema.virtual('schedules', {
   justOne: false
 });
 
+courseSchema.virtual('fces', {
+  ref: 'FCEs',
+  localField: 'courseID',
+  foreignField: 'courseID',
+  justOne: false
+});
+
 courseSchema.plugin(mongoosePaginate);
 
 export const scheduleSchema = new mongoose.Schema({

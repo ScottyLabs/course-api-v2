@@ -1,5 +1,5 @@
 import { getCourses, getCourseWithID } from "./courseController.js";
-import { getCourseInfo, getFilteredCourses } from "./courseToolController.js";
+import { getCourseInfo, getFilteredCourses, getCourses as getCourseToolCourses } from "./courseToolController.js";
 import { getFCEWithID, getFCEs } from "./fceController.js";
 import { getSchedules } from "./scheduleController.js";
 import path from "path";
@@ -11,6 +11,10 @@ const routes = (app) => {
   app.route("/courses/courseID/:courseID").get(getCourseWithID);
 
   app.route("/courseTool").get(getFilteredCourses);
+  app.route("/courseTool").post(isUser, getFilteredCourses);
+  app.route("/courseTool/courses").get(getCourseToolCourses);
+  app.route("/courseTool/courses").post(isUser, getCourseToolCourses);
+  
   app.route("/courseTool/courseID/:courseID").get(getCourseInfo);
 
   app.route("/schedules").get(getSchedules);
