@@ -140,7 +140,7 @@ FCEs.aggregate([
     {
         //Finally, gives each object its own ID
         $set: {
-            _id: ObjectId()
+            _id: "$ObjectId()"
         }
     }],
     (err, cursor) => {

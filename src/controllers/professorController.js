@@ -16,8 +16,6 @@ const resultFilter = "-_id -__v";
  * @param {Number} [req.query.providesFeedback] Provide Feedback
  * @param {Object} res response object
  */
-
-
 export const getProfs = (req, res) => {
     let requestParams = [
         "andrewID",
