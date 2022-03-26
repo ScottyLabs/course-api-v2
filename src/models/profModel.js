@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
 export const profSchema = new mongoose.Schema({
-  _id: String,
+  name: String,
   andrewID: String,
+  departments: [String],
   courses: [
     {
       courseID: String, 

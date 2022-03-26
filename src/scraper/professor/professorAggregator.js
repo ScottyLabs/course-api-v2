@@ -20,10 +20,11 @@ FCEs.aggregate([
         //Group course offerings by instructor, averaging overall ratings
         $group: {
             _id: "$instructor",
-            andrewID: {$first: "$andrewID"},
+            andrewID: {$max: "$andrewID"},
             respectForStudents: {$avg: {$arrayElemAt: ["$rating", 6]}},
             interestInLearning: {$avg: {$arrayElemAt: ["$rating", 0]}},
             providesFeedback: {$avg: {$arrayElemAt: ["$rating", 2]}},
+            departments: {$addToSet: "$department"},
             courseInfo: {$push: {
                 courseID: "$courseID",
                 year: "$year",
@@ -49,6 +50,7 @@ FCEs.aggregate([
             respectForStudents: {$first: "$respectForStudents"},
             interestInLearning: {$first: "$interestInLearning"},
             providesFeedback: {$first: "$providesFeedback"},
+            departments: {$first: "$departments"},
             //course info
             teachingRating: {$avg: "$courseInfo.rating7"},
             overallRating: {$avg: "$courseInfo.rating8"},
@@ -74,6 +76,7 @@ FCEs.aggregate([
             respectForStudents: {$first: "$respectForStudents"},
             interestInLearning: {$first: "$interestInLearning"},
             providesFeedback: {$first: "$providesFeedback"},
+            departments: {$first: "$departments"},
             hrsPerWeek: {$avg: "$semesters.hrsPerWeek"},
             teachingRating: {$first: "$teachingRating"},
             overallRating: {$first: "$overallRating"},
@@ -103,6 +106,7 @@ FCEs.aggregate([
             respectForStudents: {$first: "$respectForStudents"},
             interestInLearning: {$first: "$interestInLearning"},
             providesFeedback: {$first: "$providesFeedback"},
+            departments: {$first: "$departments"},
             yearHrsPerWeek: {$avg: "$yearHrsPerWeek"},
             summerHrsPerWeek: {$avg: "$summerHrsPerWeek"},
             teachingRating: {$first: "$teachingRating"},
@@ -114,10 +118,12 @@ FCEs.aggregate([
         }
     },
     {
-        //Combines the course data to get back to grouping by instructor
+        //Combines the course data to get back to grouping by instructor, duplicating the name field
         $group: {
             _id: "$_id.instructor",
+            name: {$first: "$_id.instructor"},
             andrewID: {$first: "$andrewID"},
+            departments: {$first: "$departments"},
             courses: {$push: {
                 courseID: "$_id.courseID",
                 yearHrsPerWeek: "$yearHrsPerWeek",
@@ -129,6 +135,12 @@ FCEs.aggregate([
             respectForStudents: {$first: "$respectForStudents"},
             interestInLearning: {$first: "$interestInLearning"},
             providesFeedback: {$first: "$providesFeedback"}
+        }
+    },
+    {
+        //Finally, gives each object its own ID
+        $set: {
+            _id: "$ObjectId()"
         }
     }],
     (err, cursor) => {
