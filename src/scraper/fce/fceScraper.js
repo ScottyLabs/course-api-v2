@@ -1,22 +1,24 @@
 import { FCEEntry } from "../../models/fceEntry.js";
 import fs from "fs";
 import parse from "csv-parse/lib/sync.js";
+import { assert } from "console";
 
 //old parser code
 //seems to work after I modified it for the new csv
 export const parseFCEData = async () => {
   //resets header labels to process section-by-section analysis
   let headerLabels = [
+    "year",
     "semester",
     "college",
-    "instructor",
-    "andrewID",
     "department",
     "courseID",
+    "section",
+    "instructor",
     "courseName",
     "level",
-    "numRespondents",
     "possibleRespondents",
+    "numRespondents",
     "responseRate",
     "hrsPerWeek",
     "rating1",
