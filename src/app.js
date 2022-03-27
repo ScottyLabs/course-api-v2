@@ -3,8 +3,18 @@ import express from "express";
 import mongoose from "mongoose";
 import routes from "./controllers/index.js";
 import cors from "cors";
+import { KeyStore, generateSigningRequestHandler } from "passlink-server";
 
 dotenv.config();
+
+KeyStore.readKey();
+
+const signingRequestHandler = generateSigningRequestHandler({
+  redirectUrl: 'http://localhost:3010',
+  restrictDomain: true,
+  applicationId: process.env.LOGIN_API_ID
+}, KeyStore.getSecretKey(), true);
+
 const app = express();
 const port = process.env.PORT || 3000;
 const database = process.env.MONGODB_URI || "mongodb://localhost:27017";
@@ -27,5 +37,7 @@ routes(app);
 app.get("/", function (req, res) {
   res.send("ScottyLabs Course API");
 });
+
+app.get("/signingrequest", signingRequestHandler);
 
 app.listen(port, () => console.log(`App listening on port ${port}.`));
