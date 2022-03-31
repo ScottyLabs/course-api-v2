@@ -10,7 +10,7 @@ dotenv.config();
 KeyStore.readKey(process.env.LOGIN_API_KEY);
 
 const signingRequestHandler = generateSigningRequestHandler({
-  redirectUrl: 'http://localhost:3010',
+  redirectUrl: 'https://stg-course.scottylabs.org',
   restrictDomain: true,
   applicationId: process.env.LOGIN_API_ID
 }, KeyStore.getSecretKey(), true);
