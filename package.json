@@ -37,7 +37,7 @@
     "mongoose": "^5.11.8",
     "mongoose-paginate-v2": "^1.4.2",
     "node-cron": "^3.0.0",
-    "passlink-server": "^1.0.1",
+    "passlink-server": "^1.0.2",
     "puppeteer": "^5.5.0",
     "x-ray": "^2.1.0"
   },
