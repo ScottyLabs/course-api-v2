@@ -7,7 +7,7 @@ import { KeyStore, generateSigningRequestHandler } from "passlink-server";
 
 dotenv.config();
 
-KeyStore.readKey();
+KeyStore.readKey(process.env.LOGIN_API_KEY);
 
 const signingRequestHandler = generateSigningRequestHandler({
   redirectUrl: 'http://localhost:3010',
