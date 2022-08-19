@@ -30,7 +30,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.8",
     "x-ray": "^2.3.4"
