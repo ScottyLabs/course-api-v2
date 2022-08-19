@@ -2,7 +2,7 @@ import { getCourses, getCourseWithID } from "./courseController.js";
 import { getFCEWithID, getFCEs } from "./fceController.js";
 import { getSchedules } from "./scheduleController.js";
 import { getProfs } from "./professorController.js";
-import path from 'path';
+import path from "path";
 
 const routes = (app) => {
   app.route("/courses").get(getCourses);
@@ -21,10 +21,9 @@ const routes = (app) => {
 
   app.route("/swagger").get((req, res) => {
     res.sendFile(path.resolve("./swagger.json"));
-  })
+  });
 
   app.route("/professors").get(getProfs);
-
 };
 
 export default routes;

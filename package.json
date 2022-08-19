@@ -3,60 +3,32 @@
   "version": "1.1.0",
   "description": "",
   "main": "src/app.js",
+  "type": "module",
   "scripts": {
-    "start": "npm run build && doppler run -- npm run serve",
-    "dev": "doppler run -- nodemon ./src/app.js --exec babel-node -e js",
-    "build": "babel src --out-dir dist",
-    "serve": "node dist/app.js",
-    "course-scrape": "npm run build && doppler run -- node dist/scraper/course/scrape.js",
-    "format": "npx prettier --write src/**/*.{tsx,ts,js,css,html}"
+    "start": "doppler run -- node src/app.js",
+    "dev": "doppler run -- nodemon ./src/app.js",
+    "lint": "eslint . --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gramliu/course-api-v2.git"
+    "url": "git+https://github.com/scottylabs/course-api-v2.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/gramliu/course-api-v2/issues"
+    "url": "https://github.com/scottylabs/course-api-v2/issues"
   },
-  "homepage": "https://github.com/gramliu/course-api-v2#readme",
+  "homepage": "https://github.com/scottylabs/course-api-v2#readme",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
-    "cheerio": "^1.0.0-rc.3",
     "cors": "^2.8.5",
-    "csv-parse": "^4.14.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "minimist": "^1.2.5",
     "mongodb": "^3.6.3",
-    "mongoose": "^5.11.8",
-    "x-ray": "^2.3.4"
+    "mongoose": "^5.11.8"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/node": "^7.0.0",
-    "@babel/plugin-proposal-class-properties": "^7.0.0",
-    "@babel/plugin-proposal-decorators": "^7.0.0",
-    "@babel/plugin-proposal-do-expressions": "^7.0.0",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0",
-    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
-    "@babel/plugin-proposal-function-bind": "^7.0.0",
-    "@babel/plugin-proposal-function-sent": "^7.0.0",
-    "@babel/plugin-proposal-json-strings": "^7.0.0",
-    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
-    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
-    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
-    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
-    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
-    "@babel/plugin-syntax-import-meta": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.15.8",
-    "@babel/preset-env": "^7.0.0",
+    "eslint": "^8.22.0",
     "nodemon": "^2.0.7"
   }
 }
