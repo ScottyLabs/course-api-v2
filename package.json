@@ -33,7 +33,6 @@
     "minimist": "^1.2.5",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.8",
-    "puppeteer": "^5.5.0",
     "x-ray": "^2.3.4"
   },
   "devDependencies": {
