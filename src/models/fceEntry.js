@@ -82,36 +82,36 @@ export class FCEEntry {
     this["year"] = year;
     for (let label of labels) {
       switch (label) {
-        case "semester":
-          this[label] = data[labelCount].toLowerCase();
-          break;
-        case "andrewID":
-          this[label] = data[labelCount].toLowerCase();
-          break;
-        case "college":
-        case "department":
-        case "location":
-        case "level":
-        case "possibleRespondents":
-        case "numRespondents":
-          this[label] = data[labelCount].trim();
-          break;
-        case "instructor":
-        case "courseName":
-          this[label] = data[labelCount].toUpperCase();
-          break;
-        case "courseID":
-          this[label] = this._insertDash(data[labelCount]);
-          break;
-        case "responseRate":
-        case "hrsPerWeek":
-          this[label] = this._castToNum(data[labelCount]);
-          break;
-        default:
-          if (label.includes("rating")) {
-            this.rating.push(this._castToNum(data[labelCount]));
-          }
-          break;
+      case "semester":
+        this[label] = data[labelCount].toLowerCase();
+        break;
+      case "andrewID":
+        this[label] = data[labelCount].toLowerCase();
+        break;
+      case "college":
+      case "department":
+      case "location":
+      case "level":
+      case "possibleRespondents":
+      case "numRespondents":
+        this[label] = data[labelCount].trim();
+        break;
+      case "instructor":
+      case "courseName":
+        this[label] = data[labelCount].toUpperCase();
+        break;
+      case "courseID":
+        this[label] = this._insertDash(data[labelCount]);
+        break;
+      case "responseRate":
+      case "hrsPerWeek":
+        this[label] = this._castToNum(data[labelCount]);
+        break;
+      default:
+        if (label.includes("rating")) {
+          this.rating.push(this._castToNum(data[labelCount]));
+        }
+        break;
       }
       labelCount++;
     }

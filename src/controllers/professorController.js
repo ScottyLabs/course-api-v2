@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import { profSchema } from "../models/profModel.js";
-import { standardizeID, singleToArray } from "../api/util.js";
 
-const Prof = mongoose.model("Professor", profSchema);          
+const Prof = mongoose.model("Professor", profSchema);
 const resultFilter = "-_id -__v";
 
 /**
@@ -17,26 +16,25 @@ const resultFilter = "-_id -__v";
  * @param {Object} res response object
  */
 export const getProfs = (req, res) => {
-    let requestParams = [
-        "andrewID",
-        "courses",
-        "name"
-    ];
-    let queryBody = new Object();
-    for (var key in req.query) {
-        if(requestParams.includes(key)) {
-            if(key === "name"){
-                queryBody["name"] = {$regex: new RegExp(req.query[key]), $options:"i"};
-            } else {
-                queryBody[key] = req.query[key];
-            }
-        } else {
-            return res.status(400).json({ message: "Bad Request", invalidKey: key });
-        }
+  let requestParams = ["andrewID", "courses", "name"];
+  let queryBody = new Object();
+  for (var key in req.query) {
+    if (requestParams.includes(key)) {
+      if (key === "name") {
+        queryBody["name"] = {
+          $regex: new RegExp(req.query[key]),
+          $options: "i",
+        };
+      } else {
+        queryBody[key] = req.query[key];
+      }
+    } else {
+      return res.status(400).json({ message: "Bad Request", invalidKey: key });
     }
-    console.log(queryBody);
-    Prof.find(queryBody, (err, result) => {
-        if (err) return res.status(500).send(err);
-        return res.json(result);
-    }).select(resultFilter);
-}
+  }
+  console.log(queryBody);
+  Prof.find(queryBody, (err, result) => {
+    if (err) return res.status(500).send(err);
+    return res.json(result);
+  }).select(resultFilter);
+};
